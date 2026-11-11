@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Restore what was already seen
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: .upstream-state
           key: upstream-state-${{ github.run_id }}
@@ -210,7 +210,7 @@ jobs:
       - name: Save what was seen
         # also after a failed source, so the sources that worked are not posted again
         if: ${{ always() && !inputs.test && hashFiles('.upstream-state/state.json') != '' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: .upstream-state
           key: upstream-state-${{ github.run_id }}
