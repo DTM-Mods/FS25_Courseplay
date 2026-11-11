@@ -1240,6 +1240,10 @@ CoursePlay здатен розподіляти та пресувати січк�
     <text name="CP_cc_fleet_fuel" text="Fuel %d %%"/>
     <text name="CP_cc_fleet_course" text="Course"/>
     <text name="CP_cc_peek_enter" text="Enter vehicle"/>
+    <text name="CP_cc_saved_onField" text="Field %d: %d courses"/>
+    <text name="CP_cc_saved_scanning" text="Reading the courses..."/>
+    <text name="CP_cc_saved_field" text="Field %d"/>
+    <text name="CP_cc_saved_widthDiffers" text="Loaded. The course is %.1f m wide, the implement %.1f m."/>
     <text name="CP_vehicle_setting_keepImplementsRunning_title" text="When lifted"/>
     <text name="CP_vehicle_setting_keepImplementsRunning_tooltip" text="In turns the implements are lifted. Switch off: the game switches them off too. Keep running: what was running stays on until it is lowered again, no spinning down and up (mowers, forage harvesters, tedders)."/>
     <text name="CP_vehicle_setting_keepImplementsRunning_switchOff" text="switch off"/>

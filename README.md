@@ -22,7 +22,8 @@ to its title, and the Fleet tab and the server need everyone on the same one.
 
 - Course tab: the vehicle's course on a live map, progress with time left, the others working the same
   field as arrows, work width, field margin, row overlap and tool offset (shows the automatic plow offset).
-- Saved tab: load and save courses.
+- Saved tab: load and save courses. The courses on the field you stand on come first, from any folder,
+  the ones made for your implement's work width before the others; each course shows its field and width.
 - Fleet tab: every Courseplay and AutoDrive vehicle on the farm with status, progress, finish time,
   distance, main tank and fuel; click a row to enter the vehicle, or its Course button to see that
   vehicle's course and progress on your own panel (Enter vehicle and Stop from there).

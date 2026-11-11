@@ -3096,6 +3096,106 @@ end
 CpModernHud.SAVED_ROWS = 6 -- folders / courses shown at once, more: the mouse wheel scrolls
 CpModernHud.SAVED_ROW = 56 -- px
 CpModernHud.SAVED_REFRESH_MS = 2000
+CpModernHud.HEADERS_PER_FRAME = 2 -- saved course files read per frame (a file is parsed whole, a few ms each)
+CpModernHud.WIDTH_TOLERANCE = 0.05 -- m: a course made for this work width
+
+--- The header of a saved course file: its work width and the field its first waypoint is on. Read as Courseplay
+--- loads the file (its schema, its file system), without the course going on the vehicle. false when it can't be read.
+local function readCourseHeader(entity)
+    if entity == nil or entity.load == nil or CpCourseManager == nil or CpCourseManager.xmlSchema == nil then
+        return false
+    end
+    local header
+    local ok = entity:load(CpCourseManager.xmlSchema, CpCourseManager.xmlKeyFileManager, function(xmlFile, baseKey)
+        local key = baseKey .. "(0)"
+        local wpKey = (Waypoint and Waypoint.xmlKey or ".wp") .. "(0)#position"
+        local x, _, z = xmlFile:getValue(key .. wpKey)
+        if x == nil then
+            -- a multi-vehicle course keeps its waypoints per position in the group
+            local mvdKey = Course and Course.MultiVehicleData and Course.MultiVehicleData.key or ".multiVehicleData"
+            x, _, z = xmlFile:getValue(key .. mvdKey .. ".waypoints(0)" .. wpKey)
+        end
+        header = {workWidth = xmlFile:getValue(key .. "#workWidth"), x = x, z = z}
+        return true
+    end)
+    if not ok or header == nil then
+        return false
+    end
+    if header.x and header.z and CpFieldUtil and CpFieldUtil.getFieldIdAtWorldPosition then
+        header.fieldId = CpFieldUtil.getFieldIdAtWorldPosition(header.x, header.z)
+    end
+    return header
+end
+
+--- The headers of the saved courses, a few files per frame so the panel never stalls: self.courseHeaders[path] =
+--- header, false (unreadable) or nil (not read yet). Returns whether every file is read.
+function CpModernHud:scanCourseHeaders(files)
+    self.courseHeaders = self.courseHeaders or {}
+    local budget = CpModernHud.HEADERS_PER_FRAME
+    local done = true
+    for _, f in ipairs(files) do
+        if self.courseHeaders[f.path] == nil then
+            if budget > 0 then
+                budget = budget - 1
+                self.courseHeaders[f.path] = readCourseHeader(f.view:getEntity())
+            else
+                done = false
+            end
+        end
+    end
+    return done
+end
+
+--- Is the course made for the vehicle's work width? nil when either isn't known.
+local function widthMatches(header, workWidth)
+    if header == nil or header == false or header.workWidth == nil or header.workWidth == 0 or workWidth == nil then
+        return nil
+    end
+    return math.abs(header.workWidth - workWidth) <= CpModernHud.WIDTH_TOLERANCE
+end
+
+--- The rows of the Saved tab: at the top (no folder open) the courses on the field the vehicle stands on first,
+--- from any folder, the ones made for its work width before the others; then the folders and courses as usual.
+--- Each course row knows its header once read. Sets saved.items, saved.fieldItems and saved.scanDone.
+function CpModernHud:assembleSavedItems(saved)
+    saved.scanDone = self:scanCourseHeaders(saved.files)
+    local headers = self.courseHeaders or {}
+    local fieldItems = {}
+    if CpModernHud.savedFolder == nil and (saved.fieldId or 0) > 0 then
+        for _, f in ipairs(saved.files) do
+            local header = headers[f.path]
+            if header and header.fieldId == saved.fieldId then
+                table.insert(fieldItems, {view = f.view, name = f.name, folderName = f.folderName, header = header,
+                                          onField = true, matches = widthMatches(header, saved.workWidth)})
+            end
+        end
+        table.sort(fieldItems, function(a, b)
+            if (a.matches == true) ~= (b.matches == true) then
+                return a.matches == true
+            end
+            return a.name < b.name
+        end)
+    end
+    local items = {}
+    for _, item in ipairs(fieldItems) do
+        table.insert(items, item)
+    end
+    for _, item in ipairs(saved.entries) do
+        if not item.isFolder then
+            item.header = headers[item.path]
+            item.matches = widthMatches(item.header, saved.workWidth)
+        end
+        table.insert(items, item)
+    end
+    saved.items, saved.fieldItems = items, fieldItems
+end
+
+--- The warning when a course isn't made for the vehicle's work width, nil when it is (or it isn't known)
+function CpModernHud:savedWidthWarning(item, saved)
+    if item.matches == false then
+        return t("CP_cc_saved_widthDiffers", item.header.workWidth, saved.workWidth)
+    end
+end
 
 function CpModernHud:showView(view)
     CpModernHud.view = view
@@ -3124,7 +3224,10 @@ function CpModernHud:getSavedEntries()
             CpModernHud.savedFolder = nil
         end
     end
-    c = {folderName = CpModernHud.savedFolder, folder = folder, top = top, time = now, items = {}}
+    local function pathOf(entry)
+        return entry.getFullPath and entry:getFullPath() or entry:getName()
+    end
+    c = {folderName = CpModernHud.savedFolder, folder = folder, top = top, time = now, entries = {}, files = {}}
     for _, entry in ipairs(folder:getEntries()) do
         if entry:isDirectory() then
             local count = 0
@@ -3133,10 +3236,33 @@ function CpModernHud:getSavedEntries()
                     count = count + 1
                 end
             end
-            table.insert(c.items, {view = entry, name = entry:getName(), isFolder = true, count = count})
+            table.insert(c.entries, {view = entry, name = entry:getName(), isFolder = true, count = count})
         else
-            table.insert(c.items, {view = entry, name = entry:getName()})
+            table.insert(c.entries, {view = entry, name = entry:getName(), path = pathOf(entry)})
         end
+    end
+    -- every course file, in the folders too (the courses on this field come from any folder)
+    for _, entry in ipairs(top:getEntries()) do
+        if entry:isDirectory() then
+            for _, sub in ipairs(entry:getEntries()) do
+                if not sub:isDirectory() then
+                    table.insert(c.files, {view = sub, name = sub:getName(), path = pathOf(sub),
+                                           folderName = entry:getName()})
+                end
+            end
+        else
+            table.insert(c.files, {view = entry, name = entry:getName(), path = pathOf(entry)})
+        end
+    end
+    -- the field the vehicle stands on and its work width, for the courses that fit
+    local vehicle = self.vehicle
+    if vehicle.rootNode and CpFieldUtil and CpFieldUtil.getFieldIdAtWorldPosition then
+        local x, _, z = getWorldTranslation(vehicle.rootNode)
+        c.fieldId = CpFieldUtil.getFieldIdAtWorldPosition(x, z)
+    end
+    local generator = vehicle.getCourseGeneratorSettings and vehicle:getCourseGeneratorSettings()
+    if generator and generator.workWidth then
+        c.workWidth = generator.workWidth:getValue()
     end
     self.savedCache = c
     return c
@@ -3158,7 +3284,7 @@ function CpModernHud:refreshSaved()
     if g_Courseplay.courseStorage then
         g_Courseplay.courseStorage:refresh()
     end
-    self.savedCache = nil
+    self.savedCache, self.courseHeaders = nil, nil
 end
 
 --- The saved course on the vehicle, through Courseplay's course manager
@@ -3192,6 +3318,7 @@ function CpModernHud:drawSaved()
     local pad, padY, width, smallSize = m.pad, m.padY, m.width, m.smallSize
     local textW = width - 2 * pad
     local saved = self:getSavedEntries()
+    self:assembleSavedItems(saved)
     local editable = not vehicle:getIsAIActive()
     local canGo = editable and vehicle:getCanStartCpFieldWork()
     local hasCourse = vehicle:hasCpCourse()
@@ -3246,8 +3373,14 @@ function CpModernHud:drawSaved()
                 end
             end)
         end)
-        self:textIn(x + width - pad, cy, navH, smallSize, t("CP_cc_saved_entryCount", #saved.items), C.muted,
-                RenderText.ALIGN_RIGHT)
+        -- how many courses are on this field (while the files are read: that), else how many entries
+        local countText = t("CP_cc_saved_entryCount", #saved.entries)
+        if #saved.fieldItems > 0 then
+            countText = t("CP_cc_saved_onField", saved.fieldId, #saved.fieldItems)
+        elseif not saved.scanDone then
+            countText = t("CP_cc_saved_scanning")
+        end
+        self:textIn(x + width - pad, cy, navH, smallSize, countText, C.muted, RenderText.ALIGN_RIGHT)
     end
     if hintH > 0 then
         cy = cy - hintH
@@ -3273,8 +3406,12 @@ function CpModernHud:drawSaved()
             Draw.roundRect(x + pad - self:w(6), cy + self:h(1), textW + self:w(12), rowH - self:h(2), m.smallRadius,
                     C.surface)
             Draw.roundRect(x + pad - self:w(6), cy + self:h(6), self:w(3), rowH - self:h(12), self:h(1.5), C.accent)
+        elseif item.onField then
+            -- a course on this field: marked on the left
+            Draw.roundRect(x + pad - self:w(6), cy + self:h(6), self:w(3), rowH - self:h(12), self:h(1.5),
+                    item.matches == false and C.warn or C.accent)
         end
-        self:drawSavedItem(x, cy, rowH, item, vehicle, editable, canGo)
+        self:drawSavedItem(x, cy, rowH, item, vehicle, editable, canGo, saved)
     end
     if maxScroll > 0 then
         local areaH = top - cy
@@ -3300,7 +3437,7 @@ function CpModernHud:drawSaved()
 end
 
 --- One folder (open it) or course (Load, Go, Rename, Delete), or the question before deleting it
-function CpModernHud:drawSavedItem(x, y, rowH, item, vehicle, editable, canGo)
+function CpModernHud:drawSavedItem(x, y, rowH, item, vehicle, editable, canGo, saved)
     local C = CpModernHud.C
     local m = self:metrics()
     local pad, width, smallSize, textSize = m.pad, m.width, m.smallSize, m.textSize
@@ -3354,19 +3491,54 @@ function CpModernHud:drawSavedItem(x, y, rowH, item, vehicle, editable, canGo)
         end
         return
     end
-    -- a course: its name, then Load, Go, Rename, Delete
-    self:textIn(x + pad, y + rowH - lineH, lineH, textSize, Draw.fit(item.name, textSize, textW, true), C.text, nil, true)
+    -- a course: its name, what its file says (its folder when it is listed for this field, its field, its work
+    -- width, in the warning color when the implement's differs), then Load, Go, Rename, Delete
+    local nameW = textW
+    local header = item.header
+    if header then
+        local parts = {}
+        if item.onField and item.folderName then
+            table.insert(parts, item.folderName)
+        end
+        if (header.fieldId or 0) > 0 then
+            table.insert(parts, t("CP_cc_saved_field", header.fieldId))
+        end
+        local widthText = header.workWidth and header.workWidth > 0 and string.format("%.1f m", header.workWidth)
+        local infoText = table.concat(parts, " · ")
+        local infoW = Draw.textWidth(smallSize, infoText)
+        local widthW = widthText and Draw.textWidth(smallSize, (infoText ~= "" and " · " or "") .. widthText) or 0
+        if infoW + widthW > textW * 0.55 then
+            -- (no room: the width alone, it matters most)
+            infoText, infoW = "", 0
+            widthW = widthText and Draw.textWidth(smallSize, widthText) or 0
+        end
+        local right = x + width - pad
+        if widthText then
+            self:textIn(right, y + rowH - lineH, lineH, smallSize, (infoText ~= "" and " · " or "") .. widthText,
+                    item.matches == false and C.warn or C.muted, RenderText.ALIGN_RIGHT)
+        end
+        if infoText ~= "" then
+            self:textIn(right - widthW, y + rowH - lineH, lineH, smallSize, infoText, C.muted, RenderText.ALIGN_RIGHT)
+        end
+        nameW = textW - infoW - widthW - self:w(10)
+    end
+    self:textIn(x + pad, y + rowH - lineH, lineH, textSize, Draw.fit(item.name, textSize, nameW, true), C.text, nil, true)
     local gap = self:w(6)
     local bw = (textW - 3 * gap) / 4
     local buttons = {
         {t("CP_cc_saved_load"), editable and function()
             if self:loadSavedCourse(vehicle, item) then
-                self:showMessage(t("CP_cc_saved_loaded", item.name), false)
+                local warning = self:savedWidthWarning(item, saved)
+                self:showMessage(warning or t("CP_cc_saved_loaded", item.name), warning ~= nil)
                 self:showView(CpModernHud.VIEW_COURSE)
             end
         end, C.chip, C.hover, C.text},
         {t("CP_cc_saved_go"), canGo and function()
+            local warning = self:savedWidthWarning(item, saved)
             self:goWithSavedCourse(vehicle, item)
+            if warning then
+                self:showMessage(warning, true)
+            end
         end, C.accent, C.accentHover, C.white},
         {t("CP_cc_saved_rename"), function()
             self:askName(t("CP_cc_saved_rename"), item.name, function(name)
@@ -3850,14 +4022,19 @@ function CpModernHud:addSavedKeys(saved, shown, vehicle, editable, canGo)
     if editable then
         self:setKey("extra1", t("CP_cc_saved_load"), function()
             if self:loadSavedCourse(vehicle, item) then
-                self:showMessage(t("CP_cc_saved_loaded", item.name), false)
+                local warning = self:savedWidthWarning(item, saved)
+                self:showMessage(warning or t("CP_cc_saved_loaded", item.name), warning ~= nil)
                 self:showView(CpModernHud.VIEW_COURSE)
             end
         end)
     end
     if canGo then
         self:setKey("accept", t("CP_cc_saved_go"), function()
+            local warning = self:savedWidthWarning(item, saved)
             self:goWithSavedCourse(vehicle, item)
+            if warning then
+                self:showMessage(warning, true)
+            end
         end)
     end
     self:setKey("cancel", t("CP_cc_saved_delete"), function()

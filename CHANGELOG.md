@@ -3,6 +3,13 @@
 Versions are `<Courseplay version>-cc.<CourseCorrect build>`. The release workflow takes the notes for a
 version from its `## <version>` section here.
 
+## 8.1.0.3-cc.3
+
+- Saved tab: the courses on the field the vehicle stands on are listed first, from any folder, with
+  the ones made for the implement's work width before the others. Course rows show the course's
+  field and work width (warning colour when the implement's differs), and Load / Go say so when the
+  width does not match. The course files are read a few per frame, so the panel never stalls.
+
 ## 8.1.0.3-cc.2
 
 - Finish time: next to the time left, the panel shows the game clock when the course will be done

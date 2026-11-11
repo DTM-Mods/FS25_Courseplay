@@ -1251,6 +1251,10 @@ Das Kreuz sollte jetzt, wie im Bild dargestellt, gelb sein.
     <text name="CP_cc_fleet_fuel" text="Kraftstoff %d %%"/>
     <text name="CP_cc_fleet_course" text="Kurs"/>
     <text name="CP_cc_peek_enter" text="Einsteigen"/>
+    <text name="CP_cc_saved_onField" text="Feld %d: %d Kurse"/>
+    <text name="CP_cc_saved_scanning" text="Kurse werden gelesen..."/>
+    <text name="CP_cc_saved_field" text="Feld %d"/>
+    <text name="CP_cc_saved_widthDiffers" text="Geladen. Der Kurs ist %.1f m breit, das Gerät %.1f m."/>
     <text name="CP_vehicle_setting_keepImplementsRunning_title" text="Beim Ausheben"/>
     <text name="CP_vehicle_setting_keepImplementsRunning_tooltip" text="In Wendemanövern werden die Geräte ausgehoben. Ausschalten: das Spiel schaltet sie auch aus. Weiterlaufen: was lief, bleibt an, bis es wieder abgesenkt wird, ohne Aus- und Hochlaufen (Mähwerke, Feldhäcksler, Wender)."/>
     <text name="CP_vehicle_setting_keepImplementsRunning_switchOff" text="ausschalten"/>
