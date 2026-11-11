@@ -5,10 +5,14 @@
 # FS25_Courseplay (CourseCorrect panel fork)
 
 A fork of [Courseplay for Farming Simulator 25](https://github.com/Courseplay/Courseplay_FS25)
-(based on 8.1.0.x) with the **CourseCorrect panel**: a compact in-game HUD that replaces the stock
+with the **CourseCorrect panel**: a compact in-game HUD that replaces the stock
 Courseplay HUD. Everything else is Courseplay as upstream ships it.
 
 Select it in Courseplay > Settings > Global > HUD style = CourseCorrect.
+
+Versions read `<Courseplay version>-cc.<CourseCorrect build>`, for example `8.1.0.3-cc.1`: the first part is the
+upstream Courseplay release this fork is on, the number after `cc.` counts our builds on it. The panel shows it next
+to its title, and the Fleet tab and the server need everyone on the same one.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/features.jpg" alt="Features" width="100%">
@@ -52,9 +56,13 @@ the CourseCorrect panel is the addition of this fork.
 
 ### Building
 
-Zip the contents of this folder (not the folder itself) as `FS25_Courseplay.zip`, excluding `.git`,
-`.gitignore` and `README.md`. Keep the file name: savegames identify a mod by its zip name. Lua files must
-stay under 0.5 MB each for the GIANTS mod checks.
+The Build workflow (`.github/workflows/build.yml`, shared DTM Mods steps) checks every push and builds
+`FS25_Courseplay.zip` from the files git tracks, leaving out `.github`, Markdown and other development files.
+A pushed tag `v<version in modDesc.xml>` (e.g. `v8.1.0.3-cc.2`) publishes a GitHub release with the zip.
+To cut a build: bump `<version>` in `modDesc.xml`, add a `## <version>` section to `CHANGELOG.md`, commit, tag, push.
+Locally the same script does it: `python ci/fs25_mod.py build --root . --out dist --name FS25_Courseplay`
+(from the DTM-Mods/.github repository). Never rename the zip: savegames identify a mod by its file name.
+Lua files must stay under 0.5 MB each for the GIANTS mod checks.
 
 ### Tests
 

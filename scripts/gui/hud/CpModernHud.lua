@@ -1671,6 +1671,14 @@ function CpModernHud:drawFrame(m, contentH, subtitle, status, statusColor)
     local closeW = self:w(28)
     local closeX = x + width - m.pad - closeW
     self:textIn(x + m.pad, cy + m.headerH * 0.46, m.headerH * 0.5, m.titleSize, CpModernHud.TITLE, C.text, nil, true)
+    -- the build this is, e.g. 8.1.0.3-cc.1 (the Courseplay version, then the CourseCorrect build), after the title
+    local titleW = Draw.textWidth(m.titleSize, CpModernHud.TITLE, true)
+    local version = g_Courseplay and g_Courseplay.currentVersion
+    local versionW = 0
+    if version then
+        versionW = self:w(8) + Draw.textWidth(m.smallSize, version)
+        self:textIn(x + m.pad + titleW + self:w(8), cy + m.headerH * 0.46, m.headerH * 0.5, m.smallSize, version, C.muted)
+    end
     subtitle = Draw.fit(subtitle or "", m.smallSize, closeX - 2 * closeW - self:w(12) - x - m.pad)
     self:textIn(x + m.pad, cy + m.headerH * 0.06, m.headerH * 0.45, m.smallSize, subtitle, C.muted)
     local function headerButton(bx, label, onClick, on)
@@ -1694,7 +1702,7 @@ function CpModernHud:drawFrame(m, contentH, subtitle, status, statusColor)
     if status then
         -- as wide as the status, but not over the title or the vehicle's name under it (a long status is shortened,
         -- with no room left it isn't shown)
-        local leftW = math.max(Draw.textWidth(m.titleSize, CpModernHud.TITLE, true),
+        local leftW = math.max(titleW + versionW,
                 Draw.textWidth(m.smallSize, subtitle or ""))
         local room = miniX - self:w(6) - (x + m.pad + leftW + self:w(8))
         if room < self:w(70) then
