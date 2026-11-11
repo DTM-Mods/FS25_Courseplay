@@ -1989,10 +1989,12 @@ function CpModernHud:copyChip(vehicle, course)
 end
 
 --- The map hidden: its buttons (clear, turn round, copy) in a row
-function CpModernHud:drawCourseChips(vehicle, course, x, y, editable)
+function CpModernHud:drawCourseChips(vehicle, course, x, y, clearable, editable)
     local gap = self:w(6)
-    if editable then
+    if clearable then
         x = x + self:chip(x, y, t("CP_cc_btn_clear"), self:clearChipAction(vehicle)) + gap
+    end
+    if editable then
         x = x + self:chip(x, y, t("CP_cc_btn_reverse"), function()
             vehicle:cpReverseCurrentCourse()
         end) + gap
@@ -2001,6 +2003,29 @@ function CpModernHud:drawCourseChips(vehicle, course, x, y, editable)
     if copy then
         self:chip(x, y, copy[1], copy[2])
     end
+end
+
+--- Clearing the course: the question with Clear / Cancel, in the map's place
+function CpModernHud:drawClearAsk(vehicle, plotX, cy, plotW, plotH, textSize, smallSize)
+    local C = CpModernHud.C
+    self:textIn(plotX + plotW / 2, cy + plotH * 0.5, plotH * 0.3, textSize, t("CP_cc_clear_ask"), C.text,
+            RenderText.ALIGN_CENTER)
+    local gap, bh = self:w(8), self:h(30)
+    local boxW = plotW * 0.86
+    local bw = (boxW - gap) / 2
+    local bx, by = plotX + (plotW - boxW) / 2, cy + plotH * 0.5 - bh - self:h(12)
+    local function clear()
+        self.confirmClear = nil
+        vehicle:resetCpCoursesFromGui()
+    end
+    local function cancel()
+        self.confirmClear = nil
+    end
+    self:button(bx, by, bw, bh, t("CP_cc_btn_clear"), C.danger, C.dangerHover, C.white, clear, smallSize)
+    self:button(bx + bw + gap, by, bw, bh, t("CP_cc_btn_cancel"), C.chip, C.hover, C.text, cancel, smallSize)
+    self:setKey("accept", t("CP_cc_btn_clear"), clear)
+    self:setKey("cancel", t("CP_cc_btn_cancel"), cancel)
+    self:setKey("back", t("CP_cc_btn_cancel"), cancel)
 end
 
 CpModernHud.DETAIL_ROW = 19 -- px
@@ -2128,12 +2153,15 @@ function CpModernHud:drawFieldwork()
     local info = course and self:getCourseInfo(vehicle, course)
     local active = vehicle:getIsCpActive()
     local editable = not vehicle:getIsAIActive()
+    -- the course can be cleared whenever Courseplay is not driving it (AutoDrive on the way to the field, or
+    -- another helper, do not need it)
+    local clearable = course ~= nil and not active
     local recording = vehicle:getIsCpCourseRecorderActive()
     local rows = self:getFieldworkRows(vehicle)
     -- the map hidden: its buttons in a row and the course's information always shown in its place
     local calling = course ~= nil and self.callingTruck == vehicle
     local mapHidden = info ~= nil and not CpModernHud.showMap and not recording and not self:isGenerating(vehicle)
-            and not (self.confirmClear == vehicle and editable) and not calling
+            and not (self.confirmClear == vehicle and clearable) and not calling
     local details = info and (CpModernHud.showDetails or mapHidden) and self:getDetails(info, status) or {}
     local doneFraction = self:getProgress(status)
     local others = info and self:getOthers(vehicle, info.othersOutline, info.othersMargin) or {}
@@ -2173,7 +2201,7 @@ function CpModernHud:drawFieldwork()
         Draw.roundRect(plotX, cy, plotW, plotH, m.smallRadius, C.surface)
     end
     if mapHidden then
-        self:drawCourseChips(vehicle, course, plotX, cy + (plotH - self:h(22)) / 2, editable)
+        self:drawCourseChips(vehicle, course, plotX, cy + (plotH - self:h(22)) / 2, clearable, editable)
     elseif recording then
         local paused = vehicle:getIsCpCourseRecorderPaused()
         self:textLines(plotX + plotW / 2, cy + plotH * 0.3, plotH * 0.4, textSize,
@@ -2184,32 +2212,18 @@ function CpModernHud:drawFieldwork()
     elseif calling then
         -- calling a truck: the free trucks, in the map's place
         self:drawCallTruck(vehicle, info, plotX, cy, plotW, plotH)
-    elseif course and self.confirmClear == vehicle and editable then
+    elseif self.confirmClear == vehicle and clearable then
         -- clearing the course: asked first, in the map's place
-        self:textIn(plotX + plotW / 2, cy + plotH * 0.5, plotH * 0.3, textSize, t("CP_cc_clear_ask"), C.text,
-                RenderText.ALIGN_CENTER)
-        local gap, bh = self:w(8), self:h(30)
-        local boxW = plotW * 0.86
-        local bw = (boxW - gap) / 2
-        local bx, by = plotX + (plotW - boxW) / 2, cy + plotH * 0.5 - bh - self:h(12)
-        local function clear()
-            self.confirmClear = nil
-            vehicle:resetCpCoursesFromGui()
-        end
-        local function cancel()
-            self.confirmClear = nil
-        end
-        self:button(bx, by, bw, bh, t("CP_cc_btn_clear"), C.danger, C.dangerHover, C.white, clear, smallSize)
-        self:button(bx + bw + gap, by, bw, bh, t("CP_cc_btn_cancel"), C.chip, C.hover, C.text, cancel, smallSize)
-        self:setKey("accept", t("CP_cc_btn_clear"), clear)
-        self:setKey("cancel", t("CP_cc_btn_cancel"), cancel)
-        self:setKey("back", t("CP_cc_btn_cancel"), cancel)
+        self:drawClearAsk(vehicle, plotX, cy, plotW, plotH, textSize, smallSize)
     elseif course then
         self:drawCoursePlot(vehicle, info, plotX, cy, plotW, plotH, active and status.currentWaypointIx or 0, others)
         local chipY = cy + plotH - self:h(22) - self:h(6)
-        if editable then
-            -- clear the course (asked first, see above), turn it round
+        if clearable then
+            -- clear the course (asked first, see above)
             self:chip(plotX + self:w(6), chipY, t("CP_cc_btn_clear"), self:clearChipAction(vehicle))
+        end
+        if editable then
+            -- turn the course round
             local reverseLabel = t("CP_cc_btn_reverse")
             local reverseW = Draw.textWidth(smallSize, reverseLabel, true) + self:w(18)
             self:chip(plotX + plotW - reverseW - self:w(6), chipY, reverseLabel, function()
@@ -2629,8 +2643,11 @@ function CpModernHud:drawMini()
         end
     end
     local info = course and self:getCourseInfo(vehicle, course)
+    -- the course can be cleared whenever Courseplay is not driving it (asked first, in the map's place)
+    local clearable = course ~= nil and not vehicle:getIsCpActive()
+    local askClear = clearable and self.confirmClear == vehicle
     local miniDetails
-    if not CpModernHud.showMap and (info or unloaderMap) then
+    if not CpModernHud.showMap and (info or unloaderMap) and not askClear then
         miniDetails = {}
         for _, d in ipairs(info and self:getDetails(info, status) or {}) do
             if #miniDetails < 4 then
@@ -2651,9 +2668,18 @@ function CpModernHud:drawMini()
     if miniDetails then
         local top = cy
         cy = cy - self:h(26)
-        self:drawMapSwitch(x + m.width - m.pad, cy, self:h(26))
+        local mapW = self:drawMapSwitch(x + m.width - m.pad, cy, self:h(26))
+        local summaryW = plotW * 0.7
+        if info and clearable then
+            -- clear the course: a chip left of the map switch
+            local label = t("CP_cc_btn_clear")
+            local chipW = Draw.textWidth(m.smallSize, label, true) + self:w(18)
+            self:chip(plotX + plotW - mapW - self:w(8) - chipW, cy + (self:h(26) - self:h(22)) / 2, label,
+                    self:clearChipAction(vehicle))
+            summaryW = math.min(summaryW, plotW - mapW - chipW - self:w(16))
+        end
         if info then
-            self:textIn(plotX, cy, self:h(26), m.smallSize, Draw.fit(self:getSummary(info), m.smallSize, plotW * 0.7),
+            self:textIn(plotX, cy, self:h(26), m.smallSize, Draw.fit(self:getSummary(info), m.smallSize, summaryW),
                     C.muted)
         end
         if #miniDetails > 0 then
@@ -2666,9 +2692,15 @@ function CpModernHud:drawMini()
     end
     if miniDetails then
         -- (drawn above)
+    elseif askClear then
+        self:drawClearAsk(vehicle, plotX, cy, plotW, plotH, m.textSize, m.smallSize)
     elseif info then
         self:drawCoursePlot(vehicle, info, plotX, cy, plotW, plotH, vehicle:getIsCpActive() and status.currentWaypointIx or 0,
                 self:getOthers(vehicle, info.othersOutline, info.othersMargin))
+        if clearable then
+            -- clear the course (asked first, in the map's place): a chip on the map, bottom left as on the full panel
+            self:chip(plotX + self:w(6), cy + self:h(6), t("CP_cc_btn_clear"), self:clearChipAction(vehicle))
+        end
     elseif unloaderMap then
         self:drawCoursePlot(vehicle, unloaderMap.info, plotX, cy, plotW, plotH, unloaderMap.progressIx, unloaderMap.others)
     else
@@ -2684,7 +2716,7 @@ function CpModernHud:drawMini()
                     Draw.fit(hint, m.smallSize, plotW - self:w(20)), C.muted, RenderText.ALIGN_CENTER)
         end
     end
-    if not miniDetails and (info or unloaderMap) then
+    if not miniDetails and not askClear and (info or unloaderMap) then
         -- hide the map: a chip on it, top right
         local label = t("CP_cc_map_hide")
         local chipW = Draw.textWidth(m.smallSize, label, true) + self:w(18)
@@ -2693,15 +2725,16 @@ function CpModernHud:drawMini()
             self.plot, self.plotKey = nil, nil
         end)
     end
-    -- no course: Make course on the left, as the full panel has it (greyed without a field implement); an unloader:
-    -- its positions (Courseplay's map)
+    -- Make course / New course on the left, as the full panel has it (greyed without a field implement or while a
+    -- helper drives); an unloader: its positions (Courseplay's map)
     local left
-    if course == nil and vehicle:cpIsHudFieldWorkJobSelected() and not vehicle:getIsCpActive() then
+    if vehicle:cpIsHudFieldWorkJobSelected() and not vehicle:getIsCpActive() then
         local canGenerate = not vehicle:getIsAIActive() and not self:isGenerating(vehicle)
                 and vehicle:getCanStartCpFieldWork()
-        left = {label = t("CP_cc_btn_makeCourse"), key = "extra2", onClick = canGenerate and function()
-            self:generateCourse(vehicle)
-        end or nil}
+        left = {label = t(course and "CP_cc_btn_newCourse" or "CP_cc_btn_makeCourse"), key = "extra2",
+                onClick = canGenerate and function()
+                    self:generateCourse(vehicle)
+                end or nil}
     elseif vehicle:cpIsHudUnloaderJobSelected() and not vehicle:getIsCpActive() then
         left = {label = t("CP_cc_btn_positions"), onClick = not vehicle:getIsAIActive() and function()
             CpGuiUtil.openCourseGeneratorGui(vehicle)

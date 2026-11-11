@@ -3,6 +3,13 @@
 Versions are `<Courseplay version>-cc.<CourseCorrect build>`. The release workflow takes the notes for a
 version from its `## <version>` section here.
 
+## 8.1.0.3-cc.5
+
+- Clear (forget the course) is there whenever Courseplay itself is not driving the course: also while
+  AutoDrive or another helper drives the vehicle. It asks first, in the map's place.
+- Minimized panel: Clear on the map (or next to Show map when the map is hidden) and New course next
+  to Start, as the full panel has them.
+
 ## 8.1.0.3-cc.4
 
 - Harvesters never take another harvester for a trailer. Two beet harvesters working side by side

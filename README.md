@@ -29,7 +29,8 @@ to its title, and the Fleet tab and the server need everyone on the same one.
   vehicle's course and progress on your own panel (Enter vehicle and Stop from there).
 - Finish time: the game clock when the course will be done, next to the time left.
 - Settings tab: the vehicle's Courseplay settings.
-- Minimized panel: small map, status, Start/Stop, "Make course" and "Positions on map" buttons.
+- Minimized panel: small map, status, Start/Stop, Clear, "Make course" / "New course" and "Positions on map"
+  buttons.
 - Unloaders: the combine's course, progress and position on the truck's panel. "Go to combine" sends a
   truck that is away from the field there with AutoDrive and starts the Courseplay unloader on arrival.
 - Combines: "Call truck" lists the farm's free trucks nearest first and starts one as unloader, with an
