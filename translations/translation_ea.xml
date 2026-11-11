@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="El conductor será liberado, si el vehículo o un implemento está más desgastado. Si es 100% se desactiva."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Detener Cosechadoras, mientras llueve"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Si está activo, entonces todas las Cosechadoras esperarán a que se detenga la lluvia."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Conductor CP: Destrucción de cultivos."/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Habilita/Deshabilita la destrucción de cultivos para los ayudantes."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Solo activado para ayudantes CP"/>

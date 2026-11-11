@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="如果车辆或工具损坏过多，司机将停止工作。100%为关闭。"/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="下雨时停止收割机工作"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="如果该设置处于激活状态，则所有工作的收割机在降雨时将停止工作。"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="AI 工人是否毁坏作物"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="启用/禁用 AI工人毁坏作物。"/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="仅对CP工人生效"/>

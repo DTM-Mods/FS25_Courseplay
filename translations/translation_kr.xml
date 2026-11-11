@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="차량 또는 장비의 손상이 설정치 이상일 경우 작업을 중단합니다. (100%는 비활성화)"/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="비 오는 동안 수확 중지"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="설정이 활성화되면 비가 오는 동안 모든 수확기가 작업을 중단합니다."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="AI 작물 파괴"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="AI 작업자의 작물 파괴를 활성화/비활성화합니다."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Courseplay 작업자에만 적용"/>

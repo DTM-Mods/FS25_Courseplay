@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Föraren kommer att släppas om fordonet eller ett redskap är mer trasigt. 100% är av."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Stoppa skördemaskiner när det regnar"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Om inställningen är aktiv väntar alla skördare på att regnet ska upphöra."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="AI Helper fruktförstörelse"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Aktivera/avaktivera fruktdestruktion för hjälpare."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Aktiverad för Courseplay-hjälpare"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
-    <version>8.1.0.3-cc.3</version>
+    <version>8.1.0.3-cc.4</version>
 	<author><![CDATA[Courseplay.devTeam]]></author>
 	<title>
 		<en>CourseCorrect</en>
@@ -201,6 +201,7 @@ Changelog 8.1.0.3
 		<sourceFile filename="scripts/ai/util/VehicleSizeScanner.lua"/>
 		<sourceFile filename="scripts/ai/util/WorkWidthUtil.lua"/>
 		<sourceFile filename="scripts/ai/PathfinderController.lua"/>
+		<sourceFile filename="scripts/ai/CollisionGhost.lua"/>
 		<sourceFile filename="scripts/ai/ProximityController.lua"/>
 		<sourceFile filename="scripts/ai/FieldWorkerProximityController.lua"/>
 		<sourceFile filename="scripts/ai/CollisionAvoidanceController.lua"/>

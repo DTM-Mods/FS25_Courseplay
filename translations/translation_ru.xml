@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Водитель будет отпущен, если транспортное средство или оборудование будут изношенным более порога. 100% это ВЫКЛ."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Останавливать комбайны, пока идёт дождь"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Если эта настройка активна, тогда все комбайны будут ожидать окончания дождя."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="ИИ-помощник повреждает культуры"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Вкл/Выкл повреждение культур помощником."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Активно только для Coursesplay-помощников"/>

@@ -169,12 +169,28 @@ function PipeController:isSomethingInRange()
     return self.pipeSpec.numObjectsInTriggers > 0
 end
 
+--- Is this object (the one with the fill unit in our pipe's range) a harvester? A beet harvester's bunker accepts
+--- the same fill type as the pipe delivers, so two of them working side by side would each take the other one
+--- for a trailer, open the pipe over it and wait to unload: never unload into a harvester.
+---@param object table the object in the pipe's trigger
+---@return boolean true if the object or its root vehicle is a harvester
+function PipeController.isHarvester(object)
+    if object == nil then
+        return false
+    end
+    if object.spec_combine ~= nil then
+        return true
+    end
+    local rootVehicle = object.getRootVehicle and object:getRootVehicle()
+    return rootVehicle ~= nil and rootVehicle.spec_combine ~= nil
+end
+
 ---@return boolean true if there is a fillable trailer under the pipe
 ---@return table|nil the trailer vehicle, if there is one
 function PipeController:isFillableTrailerInRange()
     local myFillType = self:getFillType()
     for trailer, value in pairs(self.pipeSpec.objectsInTriggers) do
-        if value > 0 then
+        if value > 0 and not PipeController.isHarvester(trailer) then
             if myFillType == FillType.UNKNOWN or FillLevelUtil.canLoadTrailer(trailer, myFillType) then
                 return true, trailer
             end
@@ -831,3 +847,14 @@ function PipeController:debug(...)
     end
     ImplementController.debug(self, ...)    
 end
+
+--- The game discharges into whatever fillable object is under an open pipe, another harvester's bunker included.
+--- A Courseplay driven harvester never unloads into a harvester: the raycast hit is dropped, as if nothing was there.
+function PipeController.handleDischargeRaycast(dischargeable, superFunc, dischargeNode, hitObject, hitShape, hitDistance, hitFillUnitIndex, hitTerrain)
+    if hitObject ~= nil and dischargeable.spec_combine ~= nil and PipeController.isHarvester(hitObject) and
+            dischargeable.getIsCpActive and dischargeable:getIsCpActive() then
+        return superFunc(dischargeable, dischargeNode, nil, nil, hitDistance, nil, hitTerrain)
+    end
+    return superFunc(dischargeable, dischargeNode, hitObject, hitShape, hitDistance, hitFillUnitIndex, hitTerrain)
+end
+Dischargeable.handleDischargeRaycast = Utils.overwrittenFunction(Dischargeable.handleDischargeRaycast, PipeController.handleDischargeRaycast)

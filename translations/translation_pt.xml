@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="O trabalhador irá parar, se o veículo ou a alfaia tiverem mais dano. Os 100% indica que não aciona este opção."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Pára a colheita enquanto chove"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Se estiver activo, todas as ceifeiras esperam enquanto a chuva não parar."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Destruição de colheita pelo trabalhador"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Activa ou desactiva a destruição de colheitas por parte do trabalhador."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Só activo para trabalhadores do CP"/>

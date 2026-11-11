@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Motorista será liberado se o dano do veículo ou implemento ultrapassar este valor. 100% desativa a opção."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Parar a colheitadeira, enquanto estiver chovendo"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Se a configuração estiver ativa, todas as colheitadeiras aguardam a chuva passar."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Destruição de plantações pelo motorista IA"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Ativar/desativar destruição de plantações pelo motorista IA."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Somente ativado para motorista IA no Courseplay"/>

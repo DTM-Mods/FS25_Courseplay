@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Araç veya bir ekipman daha fazla bozulursa şoför işi bırakır. (%100 kapalı)."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Yağmur sırasında hasatı durdur"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Ayar etkinse, tüm biçerdöverler yağmurun durmasını bekleyecektir."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="YZ İşçi ekin tahribatı"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="İşçiler için ekin tahribatını aç/kapat."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Yalnızca CP işçileri için aç"/>

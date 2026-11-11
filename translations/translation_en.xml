@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Driver will be released, if the vehicle or an implement is more broken. 100% is off."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Stop harvesters while it's raining"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="If the setting is active, all harvesters will wait for the rain to stop."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="AI Helper fruit destruction"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Enable/disable the fruit destruction for helpers."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Activated for Courseplay helpers"/>

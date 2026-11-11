@@ -148,6 +148,11 @@ function ProximitySensor:getClosestObject()
     return g_currentMission:getNodeObject(self.objectId)
 end
 
+---@return number|nil id of the closest shape hit
+function ProximitySensor:getClosestObjectId()
+    return self.objectId
+end
+
 function ProximitySensor:hasHitTerrain()
     return self.hitTerrain
 end
@@ -296,7 +301,7 @@ function ProximitySensorPack:getClosestObjectDistanceAndRootVehicle()
     -- make sure we have the latest info, the sensors will make sure they only raycast once per loop
     self:update()
     local closestDistance = math.huge
-    local closestRootVehicle, closestObject, hitTerrain
+    local closestRootVehicle, closestObject, hitTerrain, closestObjectId
     -- weighted average over the different direction, weight depends on how close the closest object is
     local totalWeight, totalDegs, totalDistance = 0, 0, 0
     for _, sensor in ipairs(self.sensors) do
@@ -314,13 +319,14 @@ function ProximitySensorPack:getClosestObjectDistanceAndRootVehicle()
             closestRootVehicle = sensor:getClosestRootVehicle()
             closestObject = sensor:getClosestObject()
             hitTerrain = sensor:hasHitTerrain()
+            closestObjectId = sensor:getClosestObjectId()
         end
     end
     if closestRootVehicle == self.vehicle then
         self:adjustForwardPosition()
     end
     return closestDistance, closestRootVehicle, closestObject, hitTerrain,
-        CpMathUtil.divide(totalDegs, totalWeight), CpMathUtil.divide(totalDistance, totalWeight)
+        CpMathUtil.divide(totalDegs, totalWeight), CpMathUtil.divide(totalDistance, totalWeight), closestObjectId
 end
 
 function ProximitySensorPack:disableRightSide()

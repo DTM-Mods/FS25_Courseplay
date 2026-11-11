@@ -170,6 +170,9 @@ end
 
 function AIDriveStrategyCourse:delete()
     self:raiseControllerEvent(self.deleteEvent)
+    if self.proximityController and self.proximityController.delete then
+        self.proximityController:delete()
+    end
 end
 
 function AIDriveStrategyCourse:getGeneratedCourse(jobParameters)

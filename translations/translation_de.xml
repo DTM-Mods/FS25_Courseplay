@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Fahrer wird entlassen, wenn der Schaden des Fahrzeugs oder Arbeitsgeräts über diesem Wert liegt. 100% ist aus."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Drescher während Regen stoppen"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Wenn die Einstellung aktiviert ist, dann warten alle Drescher solange, bis der Regen aufhört."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Durch Hindernisse hindurchfahren"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="Ein Helfer, den ein Fahrzeug oder ein Objekt 10 Sekunden lang aufhält, ohne dass sich das Hindernis selbst bewegt, kollidiert nicht mehr damit und fährt hindurch, bis er frei ist. Löst die Blockade zweier Drescher oder eines Helfers und einer abgestellten Maschine."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Fruchtzerstörung Helfer"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Aktiviert/deaktiviert die Fruchtzerstörung von Helfern."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Aktiviert für Courseplay-Helfer"/>

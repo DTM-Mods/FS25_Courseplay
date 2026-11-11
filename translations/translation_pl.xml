@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Kierowca zostanie zwolniony, jeśli pojazd lub maszyna/narzędzie jest uszkodzona w ustalonym progu procentowym. 100% oznacza wyłączone."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Zatrzymaj młócenie podczas deszczu"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Gdy to ustawienie jest aktywne, wszystkie kombajny zostaną zatrzymane i będą czekały na zakończenie opadów."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Niszczenie upraw przez pomocnika SI"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Włącza/Wyłącza niszczenie upraw przez pomocników."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Aktywowane tylko dla pomocników Courseplay"/>

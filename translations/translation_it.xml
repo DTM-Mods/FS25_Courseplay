@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Il conducente verrà fermato se il veicolo od un attrezzo ha un livello di riparazione basso. Al 100% è spento."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Ferma la mietitrebbia quando piove."/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Se l'impostazione è attiva, tutti i mietitori aspettano che smetta di piovere."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Distruzione del raccolto dell'aiutante IA"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Abilita/disabilita la distruzione del raccolto per gli aiutanti."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Attivato solo per gli aiutanti del Coursesplay"/>

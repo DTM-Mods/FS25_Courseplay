@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Řidič bude propuštěn, pokud je vozidlo nebo nářadí více rozbité. 100% je vypnuto."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Zastavit kombajn, když prší"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Pokud je nastavení aktivní, pak všechny sklízeče čekají, až přestane pršet."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Zničení plodin AI pracovníkem"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Zapíná/vypíná zničení plodin pro pracovníky."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Aktivní pouze pro CP pracovníky"/>

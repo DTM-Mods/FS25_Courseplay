@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="A segítő abbahagyja a munkát, ha a jármű/szerszám ennél jobban meghibásodik. 100% soha nem hagyja abba."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Kombájn megállítása esőben"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Ha a beállítás aktív, akkor minden betakarító gép megvárja, amíg eláll az eső."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="AI Segítő termény taposás"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Engedélyezi/letiltja a termény taposást segítők számára."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Csak Coursesplay segítőknek"/>

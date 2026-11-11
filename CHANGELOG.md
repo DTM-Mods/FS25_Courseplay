@@ -3,6 +3,18 @@
 Versions are `<Courseplay version>-cc.<CourseCorrect build>`. The release workflow takes the notes for a
 version from its `## <version>` section here.
 
+## 8.1.0.3-cc.4
+
+- Harvesters never take another harvester for a trailer. Two beet harvesters working side by side
+  each saw the other one's bunker as something to unload into, opened the pipe over it and waited
+  for the unloading to finish, so both stood still for good. The pipe controller skips harvesters
+  in its trigger, and a Courseplay-driven harvester's discharge ignores a harvester under the pipe.
+- Drive through what blocks the helper (new global setting, on by default): a helper that the
+  proximity sensor has held up for 10 seconds, while the obstacle itself does not move, stops
+  colliding with that kind of obstacle (vehicles, bales, trees, static objects, never the terrain)
+  and drives through it until it is clear, then becomes solid again. Both vehicles of a deadlock
+  do this, so they pass through each other. Server side only, like all helper logic.
+
 ## 8.1.0.3-cc.3
 
 - Saved tab: the courses on the field the vehicle stands on are listed first, from any folder, with

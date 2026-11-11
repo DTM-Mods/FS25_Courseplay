@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="L'ouvrier CP s'arrêtera si le véhicule ou un outil est abimé avec un état d'entretien sous ce seuil. 100% = éteint."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Pas de récolte pendant la pluie"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Arrête toutes les moissonneuses ou récolteuses en cas de pluie. Reprise automatique lorsque la pluie s'arrête."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="Destruction des cultures pour les ouvriers IA"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Active/Désactive la destruction des cultures pour les ouvriers gérés par l'IA."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Activée seulement pour les ouvriers Courseplay"/>

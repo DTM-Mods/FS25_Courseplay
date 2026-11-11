@@ -390,6 +390,8 @@
     <text name="CP_global_setting_brokenThreshold_tooltip" text="Водій буде звільнений, якщо автомобіль або обладнання зноситься нижче вказаного порогу. 100% = вимкнено."/>
     <text name="CP_global_setting_stopThreshingDuringRain_title" text="Зупиняти комбайни під час дощу"/>
     <text name="CP_global_setting_stopThreshingDuringRain_tooltip" text="Якщо ця установка активна, то всі комбайни будуть чекати закінчення дощу."/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_title" text="Drive through what blocks the helper"/>
+    <text name="CP_global_setting_driveThroughWhenBlocked_tooltip" text="A helper that a vehicle or an object has held up for 10 seconds, while that obstacle does not move itself, stops colliding with it and drives through it until it is clear. Gets two harvesters, or a helper and a parked machine, out of a deadlock."/>
     <text name="CP_global_setting_fruitDestruction_title" text="ШІ-помічник пошкоджує культури"/>
     <text name="CP_global_setting_fruitDestruction_tooltip" text="Увімк/Вимк пошкодження культур помічником."/>
     <text name="CP_global_setting_fruitDestruction_only_cp" text="Активно тільки для CoursePlay-помічників"/>

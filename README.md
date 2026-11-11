@@ -37,9 +37,14 @@ to its title, and the Fleet tab and the server need everyone on the same one.
 - Map arrows are clickable (enter that vehicle) and show the vehicle's name on hover.
 - Course generator: row overlap setting (centre rows, 0-20 %).
 - Multiplayer: maps and statuses work on clients that never ran field detection.
+- Harvesters never unload into another harvester (two beet harvesters side by side used to wait on
+  each other for good).
+- Drive through what blocks the helper (global setting, on by default): a helper held up for 10
+  seconds by a vehicle or an object that does not move stops colliding with it and drives through.
 
 The panel lives in `scripts/gui/hud/CpModernHud.lua` and `scripts/gui/hud/CpHudDraw.lua`; the row overlap
-setting is in `scripts/courseGenerator/FieldworkContext.lua`.
+setting is in `scripts/courseGenerator/FieldworkContext.lua`; the drive-through logic is in
+`scripts/ai/ProximityController.lua` and `scripts/ai/CollisionGhost.lua`.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/installation.jpg" alt="Installation" width="100%">
