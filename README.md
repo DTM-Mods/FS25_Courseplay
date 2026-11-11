@@ -23,8 +23,10 @@ to its title, and the Fleet tab and the server need everyone on the same one.
 - Course tab: the vehicle's course on a live map, progress with time left, the others working the same
   field as arrows, work width, field margin, row overlap and tool offset (shows the automatic plow offset).
 - Saved tab: load and save courses.
-- Fleet tab: every Courseplay and AutoDrive vehicle on the farm with status, progress and distance;
-  click a row to enter the vehicle.
+- Fleet tab: every Courseplay and AutoDrive vehicle on the farm with status, progress, finish time,
+  distance, main tank and fuel; click a row to enter the vehicle, or its Course button to see that
+  vehicle's course and progress on your own panel (Enter vehicle and Stop from there).
+- Finish time: the game clock when the course will be done, next to the time left.
 - Settings tab: the vehicle's Courseplay settings.
 - Minimized panel: small map, status, Start/Stop, "Make course" and "Positions on map" buttons.
 - Unloaders: the combine's course, progress and position on the truck's panel. "Go to combine" sends a

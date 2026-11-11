@@ -456,6 +456,36 @@ function CpModernHud:getProgress(status)
     end
 end
 
+--- Courseplay's remaining time text ("1h:23m", "12m:5s", "45s", see CpGuiUtil.getFormatTimeText) back to seconds,
+--- nil for anything else (the text is all the clients get)
+local function parseRemainingTime(text)
+    if text == nil or text == "" then
+        return nil
+    end
+    local total, found = 0, false
+    for n, unit in tostring(text):gmatch("(%d+)([hms])") do
+        total = total + tonumber(n) * (unit == "h" and 3600 or unit == "m" and 60 or 1)
+        found = true
+    end
+    return found and total or nil
+end
+
+--- The game's clock when the work is done ("14:32") from Courseplay's remaining time: the remaining time is real
+--- seconds (distance over speed), the clock runs timeScale times as fast. nil without a usable time.
+function CpModernHud.finishTimeText(remainingText)
+    local seconds = parseRemainingTime(remainingText)
+    local environment = g_currentMission and g_currentMission.environment
+    if seconds == nil or environment == nil or environment.dayTime == nil then
+        return nil
+    end
+    local missionInfo = g_currentMission.missionInfo
+    local timeScale = missionInfo and missionInfo.timeScale or 1
+    local dayMs = 24 * 60 * 60 * 1000
+    local ms = (environment.dayTime + seconds * 1000 * timeScale) % dayMs
+    local minutes = math.floor(ms / 60000)
+    return string.format("%02d:%02d", math.floor(minutes / 60), minutes % 60)
+end
+
 --- The first Courseplay info text of the vehicle (waiting for an unloader, finished...), or nil
 function CpModernHud:getInfoText(vehicle)
     if g_infoTextManager == nil then
@@ -712,7 +742,7 @@ function CpModernHud:getOthers(vehicle, outline, extraMargin)
     end
     local now = g_time or 0
     local c = self.othersCache
-    if c and c.outline == outline and now - c.time < CpModernHud.OTHERS_INTERVAL_MS then
+    if c and c.outline == outline and c.vehicle == vehicle and now - c.time < CpModernHud.OTHERS_INTERVAL_MS then
         return c.list
     end
     local list = {}
@@ -742,7 +772,7 @@ function CpModernHud:getOthers(vehicle, outline, extraMargin)
         end
         return a.vehicle:getName() < b.vehicle:getName()
     end)
-    self.othersCache = {outline = outline, time = now, list = list}
+    self.othersCache = {outline = outline, vehicle = vehicle, time = now, list = list}
     return list
 end
 
@@ -791,10 +821,12 @@ function CpModernHud:getSummary(info)
 end
 
 --- The details of the course: {label, value} pairs
-function CpModernHud:getDetails(info, status)
+---@param vehicle table|nil whose course (another vehicle's on the Fleet tab), the panel's vehicle without
+function CpModernHud:getDetails(info, status, vehicle)
+    vehicle = vehicle or self.vehicle
     local list = {}
     -- (as Courseplay's own hud: the course's name and the waypoint it is at)
-    local name = self.vehicle.getCurrentCpCourseName and self.vehicle:getCurrentCpCourseName()
+    local name = vehicle.getCurrentCpCourseName and vehicle:getCurrentCpCourseName()
     if name and name ~= "" then
         table.insert(list, {t("CP_cc_detail_course"), name})
     end
@@ -802,6 +834,10 @@ function CpModernHud:getDetails(info, status)
     local timeLeft = status and status:getIsActive() and status:getTimeRemainingText()
     if timeLeft and timeLeft ~= "" then
         table.insert(list, {t("CP_cc_detail_timeLeft"), timeLeft})
+        local done = CpModernHud.finishTimeText(timeLeft)
+        if done then
+            table.insert(list, {t("CP_cc_detail_doneAt"), done})
+        end
     end
     if info.area then
         table.insert(list, {t("CP_cc_detail_area"), string.format("%.2f ha", info.area / 10000)})
@@ -1818,6 +1854,11 @@ function CpModernHud:drawProgress(m, x, y, h, doneFraction, status, name)
     local timeLeft = status and status:getTimeRemainingText()
     if timeLeft and timeLeft ~= "" and doneFraction < 1 then
         label = label .. " · " .. t("CP_cc_progress_left", timeLeft)
+        -- and the game's clock when it is done
+        local done = CpModernHud.finishTimeText(timeLeft)
+        if done then
+            label = label .. " · " .. t("CP_cc_progress_doneAt", done)
+        end
     end
     local barX = x + m.pad
     local barW = m.width - 2 * m.pad - Draw.textWidth(m.smallSize, label) - self:w(10)
@@ -2685,10 +2726,66 @@ end
 --- far it is with its course; a click enters it. Found from what every player has (the jobs, where the vehicles are).
 ------------------------------------------------------------------------------------------------------------------------
 
-CpModernHud.FLEET_ROWS = 8 -- vehicles shown at once, more: the mouse wheel scrolls
-CpModernHud.FLEET_ROW = 42 -- px
+CpModernHud.FLEET_ROWS = 7 -- vehicles shown at once, more: the mouse wheel scrolls
+CpModernHud.FLEET_ROW = 54 -- px, three lines: name and status, progress, distance and tanks
 CpModernHud.FLEET_INTERVAL_MS = 1000
+CpModernHud.FUEL_WARN = 15 -- % fuel left shown in the warning color
 local FLEET_ORDER = {worker = 1, unloader = 2, autoDrive = 3, helper = 4}
+
+--- The biggest tank of the vehicle and its implements (seeds, fertilizer, the grain tank, a trailer; not fuel, DEF or
+--- air) and how full it is, and the vehicle's fuel: {tank = {title, percent} or nil, fuel = percent or nil}. The tank
+--- is named after what is in it, when there is something in it.
+local function getFillLevels(vehicle)
+    local result = {}
+    local function isConsumer(object, ix)
+        local spec = object.spec_motorized
+        for _, consumer in ipairs(spec and spec.consumers or {}) do
+            if consumer.fillUnitIndex == ix then
+                return true
+            end
+        end
+        return false
+    end
+    local best
+    local function scan(object, depth)
+        if object.getFillUnits then
+            for ix, unit in pairs(object:getFillUnits()) do
+                local capacity = unit.capacity or 0
+                local fillType = unit.fillType
+                if capacity > 0 and fillType ~= FillType.DEF and fillType ~= FillType.AIR and not isConsumer(object, ix)
+                        and (best == nil or capacity > best.capacity) then
+                    best = {capacity = capacity, level = unit.fillLevel or 0, fillType = fillType}
+                end
+            end
+        end
+        if depth < 6 and object.getAttachedImplements then
+            for _, implement in pairs(object:getAttachedImplements()) do
+                if implement.object then
+                    scan(implement.object, depth + 1)
+                end
+            end
+        end
+    end
+    scan(vehicle, 0)
+    if best then
+        local title
+        if best.level > 0.5 and best.fillType and best.fillType ~= FillType.UNKNOWN and g_fillTypeManager then
+            title = g_fillTypeManager:getFillTypeTitleByIndex(best.fillType)
+        end
+        result.tank = {title = title, percent = math.floor(100 * best.level / best.capacity + 0.5)}
+    end
+    if vehicle.getConsumerFillUnitIndex and vehicle.getFillUnitFillLevelPercentage then
+        for _, name in ipairs({"DIESEL", "ELECTRICCHARGE", "METHANE"}) do
+            local fillType = FillType[name]
+            local ix = fillType and vehicle:getConsumerFillUnitIndex(fillType)
+            if ix then
+                result.fuel = math.floor(100 * (vehicle:getFillUnitFillLevelPercentage(ix) or 0) + 0.5)
+                break
+            end
+        end
+    end
+    return result
+end
 
 --- The farm's vehicles with Courseplay or AutoDrive: {vehicle, role (nil: idle), color, distance}, the working ones
 --- first (looked for once a second)
@@ -2708,7 +2805,7 @@ function CpModernHud:getFleet(vehicle)
             local role = getRole(v)
             local x, _, z = getWorldTranslation(v.rootNode)
             table.insert(list, {vehicle = v, role = role, color = role and CpModernHud.ROLES[role].color or C.muted,
-                                distance = math.sqrt((x - vx) ^ 2 + (z - vz) ^ 2)})
+                                distance = math.sqrt((x - vx) ^ 2 + (z - vz) ^ 2), fill = getFillLevels(v)})
         end
     end
     table.sort(list, function(a, b)
@@ -2756,9 +2853,11 @@ function CpModernHud:drawFleetRow(x, y, w, h, e, isOwn)
     if isOwn or hover then
         Draw.roundRect(x, y + self:h(2), w, h - self:h(4), m.smallRadius, isOwn and C.surface or C.hover)
     end
-    local line = h / 2
-    local topY, bottomY = y + line, y
+    local line = h / 3
+    local topY, midY, bottomY = y + 2 * line, y + line, y
+    local left = x + self:w(22)
     Draw.disc(x + self:w(10), topY + line / 2, self:h(4), e.color)
+    -- the name and what it does
     local status, color = self:getFleetStatus(v)
     local statusW = math.min(Draw.textWidth(m.smallSize, status), w * 0.5)
     self:textIn(x + w - self:w(8), topY, line, m.smallSize, Draw.fit(status, m.smallSize, statusW),
@@ -2767,29 +2866,67 @@ function CpModernHud:drawFleetRow(x, y, w, h, e, isOwn)
     if isOwn then
         name = name .. " " .. t("CP_cc_fleet_you")
     end
-    self:textIn(x + self:w(22), topY, line, m.smallSize, Draw.fit(name, m.smallSize, w - statusW - self:w(36), true),
+    self:textIn(left, topY, line, m.smallSize, Draw.fit(name, m.smallSize, w - statusW - self:w(36), true),
             hover and C.accentHover or C.text, nil, true)
-    if not isOwn then
-        self:textIn(x + self:w(22), bottomY, line, m.smallSize, distanceText(e.distance), C.muted)
-    end
+    -- its progress: the bar, how far it is, how long it still takes and when it is done
     local cpStatus = v.getCpStatus and v:getCpStatus()
     local fraction = self:getProgress(cpStatus)
     if fraction then
         local barH = self:h(4)
-        local barX = x + w * 0.42
         local label = string.format("%d%%", math.floor(fraction * 100 + 0.5))
         local timeLeft = cpStatus:getTimeRemainingText()
         if timeLeft and timeLeft ~= "" and fraction < 1 then
             label = label .. " · " .. timeLeft
+            local done = CpModernHud.finishTimeText(timeLeft)
+            if done then
+                label = label .. " · " .. t("CP_cc_progress_doneAt", done)
+            end
         end
         local labelW = Draw.textWidth(m.smallSize, label)
-        local barW = w - (barX - x) - labelW - self:w(16)
-        local barY = bottomY + (line - barH) / 2
-        Draw.roundRect(barX, barY, barW, barH, barH / 2, C.track)
+        local barW = w - (left - x) - labelW - self:w(16)
+        local barY = midY + (line - barH) / 2
+        Draw.roundRect(left, barY, barW, barH, barH / 2, C.track)
         if fraction > 0 then
-            Draw.roundRect(barX, barY, math.max(barH, barW * fraction), barH, barH / 2, C.accent)
+            Draw.roundRect(left, barY, math.max(barH, barW * fraction), barH, barH / 2, C.accent)
         end
-        self:textIn(x + w - self:w(8), bottomY, line, m.smallSize, label, C.muted, RenderText.ALIGN_RIGHT)
+        self:textIn(x + w - self:w(8), midY, line, m.smallSize, label, C.muted, RenderText.ALIGN_RIGHT)
+    end
+    -- how far away it is, its tank and fuel; its course on this panel (the row's button, before the row's click)
+    local rightEdge = x + w - self:w(8)
+    if not isOwn and v.hasCpCourse and v:hasCpCourse() and v.getFieldWorkCourse and v:getFieldWorkCourse() then
+        local label = t("CP_cc_fleet_course")
+        local chipW, chipH = Draw.textWidth(m.smallSize, label, true) + self:w(16), line - self:h(2)
+        self:button(rightEdge - chipW, bottomY + (line - chipH) / 2, chipW, chipH, label, C.chip, C.hover, C.text,
+                function()
+                    self.peek = v
+                    self.plot, self.plotKey = nil, nil
+                end, m.smallSize)
+        rightEdge = rightEdge - chipW - self:w(8)
+    end
+    local parts = {}
+    if not isOwn then
+        table.insert(parts, distanceText(e.distance))
+    end
+    local fill = e.fill or {}
+    if fill.tank then
+        table.insert(parts, fill.tank.title and t("CP_cc_fleet_tank", fill.tank.title, fill.tank.percent)
+                or t("CP_cc_fleet_tankEmpty"))
+    end
+    local text = table.concat(parts, " · ")
+    local room = rightEdge - left
+    local fuelText = fill.fuel and t("CP_cc_fleet_fuel", fill.fuel)
+    local fuelW = fuelText and Draw.textWidth(m.smallSize, fuelText) or 0
+    if fuelText then
+        room = room - fuelW - (text ~= "" and Draw.textWidth(m.smallSize, " · ") or 0)
+    end
+    if text ~= "" then
+        text = Draw.fit(text, m.smallSize, math.max(room, self:w(40)))
+        self:textIn(left, bottomY, line, m.smallSize, text, C.muted)
+    end
+    if fuelText then
+        local sep = text ~= "" and " · " or ""
+        self:textIn(left + Draw.textWidth(m.smallSize, text .. sep), bottomY, line, m.smallSize, fuelText,
+                fill.fuel < CpModernHud.FUEL_WARN and C.warn or C.muted)
     end
     if not isOwn then
         self:addElement(x, y, w, h, function()
@@ -2802,6 +2939,16 @@ end
 
 function CpModernHud:drawFleet()
     local vehicle = self.vehicle
+    -- another vehicle's course opened from its row: that instead of the list, while it has a course
+    local peek = self.peek
+    if peek then
+        if peek == vehicle or peek.isDeleted or not (peek.hasCpCourse and peek:hasCpCourse())
+                or not (peek.getFieldWorkCourse and peek:getFieldWorkCourse()) then
+            self.peek = nil
+        else
+            return self:drawPeek(vehicle, peek)
+        end
+    end
     local C = CpModernHud.C
     local m = self:metrics()
     local pad, padY, width, smallSize = m.pad, m.padY, m.width, m.smallSize
@@ -2850,6 +2997,96 @@ function CpModernHud:drawFleet()
     self:drawMessage(x, cy, messageH)
 end
 
+--- Another vehicle's course on this panel (the Course button of its Fleet row): whose it is and what it does, its
+--- progress, its course on the map with the others on that field, the course's details; Enter vehicle, and Stop for
+--- a driving one. The row's keys: Backspace back to the list.
+function CpModernHud:drawPeek(vehicle, peek)
+    local C = CpModernHud.C
+    local m = self:metrics()
+    local pad, padY, width, smallSize = m.pad, m.padY, m.width, m.smallSize
+    local textW = width - 2 * pad
+    local course = peek:getFieldWorkCourse()
+    local info = self:getCourseInfo(peek, course, "peekCourseInfo")
+    local status = peek.getCpStatus and peek:getCpStatus()
+    local active = status ~= nil and status:getIsActive()
+    local fraction = self:getProgress(status)
+    local others = self:getOthers(peek, info.othersOutline, info.othersMargin)
+    local details = self:getDetails(info, status, peek)
+
+    local navH = self:h(32)
+    local progressH = fraction and self:h(16) or 0
+    local plotH = self:h(CpModernHud.PLOT)
+    local summaryH = self:h(26)
+    local detailsH = self:detailsHeight(details)
+    local buttonsH = self:h(44)
+    local messageH = self:messageHeight()
+    local contentH = navH + progressH + plotH + summaryH + detailsH + padY * 0.5 + buttonsH + messageH
+    local statusText, statusColor = self:getStatus(vehicle, self.status)
+    local x, cy = self:drawFrame(m, contentH, vehicle:getName(), statusText, statusColor)
+
+    -- back to the list; whose course this is and what it does
+    cy = cy - navH
+    local function back()
+        self.peek = nil
+        self.plot, self.plotKey = nil, nil
+    end
+    local backW = self:chip(x + pad, cy + (navH - self:h(22)) / 2, t("CP_cc_tab_fleet"), back)
+    self:setKey("back", t("CP_cc_tab_fleet"), back)
+    local peekStatus, peekColor = self:getFleetStatus(peek)
+    local statusW = math.min(Draw.textWidth(smallSize, peekStatus), textW * 0.4)
+    self:textIn(x + width - pad, cy, navH, smallSize, Draw.fit(peekStatus, smallSize, statusW),
+            peekColor == C.text and C.muted or peekColor, RenderText.ALIGN_RIGHT)
+    local nameX = x + pad + backW + self:w(10)
+    self:textIn(nameX, cy, navH, smallSize,
+            Draw.fit(peek:getName(), smallSize, x + width - pad - statusW - self:w(10) - nameX, true), C.text, nil, true)
+    if progressH > 0 then
+        cy = cy - progressH
+        self:drawProgress(m, x, cy, progressH, fraction, status)
+    end
+
+    -- its course, where it and the others on the field are
+    cy = cy - plotH
+    local plotX, plotW = x + pad, textW
+    Draw.roundRect(plotX, cy, plotW, plotH, m.smallRadius, C.surface)
+    self:drawCoursePlot(peek, info, plotX, cy, plotW, plotH, active and status.currentWaypointIx or 0, others)
+    cy = cy - summaryH
+    self:textIn(plotX, cy, summaryH, smallSize, Draw.fit(self:getSummary(info), smallSize, plotW), C.muted)
+    if detailsH > 0 then
+        cy = self:drawDetails(x, cy, details)
+    end
+
+    -- Enter vehicle, and Stop while something drives it (Courseplay, AutoDrive or another helper)
+    cy = cy - padY * 0.5 - buttonsH
+    local function enter()
+        if g_localPlayer then
+            g_localPlayer:requestToEnterVehicle(peek)
+        end
+    end
+    local stopLabel, stop
+    if peek.getIsCpActive and peek:getIsCpActive() then
+        stopLabel, stop = t("CP_cc_btn_stop"), function()
+            peek:cpStartStopDriver(true)
+        end
+    elseif isAutoDriveActive(peek) and FS25_AutoDrive and FS25_AutoDrive.ADInputManager then
+        stopLabel, stop = t("CP_cc_btn_stopAutoDrive"), function()
+            CpModernHud.pendingAutoDrive[peek] = nil
+            FS25_AutoDrive.ADInputManager:onInputCall(peek, "input_start_stop")
+        end
+    elseif peek.getIsAIActive and peek:getIsAIActive() and peek.cpStartStopDriver then
+        stopLabel, stop = t("CP_cc_btn_stopHelper"), function()
+            peek:cpStartStopDriver(true)
+        end
+    end
+    local gap = self:w(10)
+    local enterW = stop and (textW - gap) / 2 or textW
+    self:button(x + pad, cy, enterW, buttonsH, t("CP_cc_peek_enter"), C.accent, C.accentHover, C.white, enter)
+    self:setKey("accept", t("CP_cc_peek_enter"), enter)
+    if stop then
+        self:button(x + pad + enterW + gap, cy, enterW, buttonsH, stopLabel, C.danger, C.dangerHover, C.white, stop)
+    end
+    self:drawMessage(x, cy, messageH)
+end
+
 ------------------------------------------------------------------------------------------------------------------------
 --- The saved courses: Courseplay's course storage (folders with courses, on this PC), with Load, Go, Rename and
 --- Delete for a course; Save stores the vehicle's course. Everything through Courseplay's own course manager
@@ -2863,7 +3100,7 @@ CpModernHud.SAVED_REFRESH_MS = 2000
 function CpModernHud:showView(view)
     CpModernHud.view = view
     self.dropdown, self.confirmDelete, self.savedScroll, self.savedCache, self.rowScroll = nil, nil, 0, nil, 0
-    self.keyRow, self.savedHighlight, self.fleetScroll, self.callingTruck = nil, nil, 0, nil
+    self.keyRow, self.savedHighlight, self.fleetScroll, self.callingTruck, self.peek = nil, nil, 0, nil, nil
     if view == CpModernHud.VIEW_SAVED and g_Courseplay.courseStorage then
         -- (what was saved or deleted meanwhile, also by Courseplay's menu)
         g_Courseplay.courseStorage:refresh()

@@ -1254,6 +1254,13 @@ Ahora su selección debería verse similar a la imagen.
     <text name="CP_cc_lines_startStop" text="Ends"/>
     <text name="CP_cc_lines_near" text="Near"/>
     <text name="CP_cc_lines_all" text="All"/>
+    <text name="CP_cc_progress_doneAt" text="done %s"/>
+    <text name="CP_cc_detail_doneAt" text="Done at"/>
+    <text name="CP_cc_fleet_tank" text="%s %d %%"/>
+    <text name="CP_cc_fleet_tankEmpty" text="Empty"/>
+    <text name="CP_cc_fleet_fuel" text="Fuel %d %%"/>
+    <text name="CP_cc_fleet_course" text="Course"/>
+    <text name="CP_cc_peek_enter" text="Enter vehicle"/>
     <text name="CP_vehicle_setting_keepImplementsRunning_title" text="When lifted"/>
     <text name="CP_vehicle_setting_keepImplementsRunning_tooltip" text="In turns the implements are lifted. Switch off: the game switches them off too. Keep running: what was running stays on until it is lowered again, no spinning down and up (mowers, forage harvesters, tedders)."/>
     <text name="CP_vehicle_setting_keepImplementsRunning_switchOff" text="switch off"/>
