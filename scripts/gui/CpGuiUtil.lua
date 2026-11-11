@@ -292,8 +292,40 @@ end
 
 
 ------------------------------------------------
---- Hud 
+--- Hud
 ------------------------------------------------
+
+--- Converts an sRGB color (0-255, like a hex color) to the linear color the engine expects.
+---@param r number
+---@param g number
+---@param b number
+---@param alpha number|nil 0-1
+---@return table r, g, b, alpha
+function CpGuiUtil.getLinearColor(r, g, b, alpha)
+	local function toLinear(c)
+		c = c / 255
+		if c <= 0.04045 then
+			return c / 12.92
+		end
+		return ((c + 0.055) / 1.055) ^ 2.4
+	end
+	return {toLinear(r), toLinear(g), toLinear(b), alpha or 1}
+end
+
+CpGuiUtil.HUD_CIRCLE_FILENAME = "img/hudCircle.dds"
+
+--- Creates a circle overlay or the part of it given in texture pixels (128x128, top left origin).
+---@param size table x, y
+---@param color table r, g, b, alpha
+---@param alignment table vertical, horizontal alignments
+---@param pixelUVs table|nil x, y, width, height
+---@return table
+function CpGuiUtil.createCircleOverlay(size, color, alignment, pixelUVs)
+	return CpGuiUtil.createOverlay(size,
+		{Utils.getFilename(CpGuiUtil.HUD_CIRCLE_FILENAME, Courseplay.BASE_DIRECTORY),
+		GuiUtils.getUVs(pixelUVs or {0, 0, 128, 128}, {128, 128})},
+		color, alignment)
+end
 
 --- Creates a new Overlay
 ---@param size table x, y
@@ -361,37 +393,40 @@ end
 function CpGuiUtil.addCopyAndPasteButtons(layout, baseHud, vehicle, lines, wMargin, hMargin, line)
 	local leftX, leftY = unpack(lines[line].left)
     local rightX, rightY = unpack(lines[line].right)
-    local btnYOffset = hMargin/3
-	local width, height = getNormalizedScreenValues(22, 22)
+    local btnYOffset = hMargin/4
+	local width, height = getNormalizedScreenValues(14, 14)
+	local btnSize = CpBaseHud.toolbarButtonSize
+	local btnDistance = getNormalizedScreenValues(btnSize + CpBaseHud.toolbarButtonGap, 0)
 
 	local copyOverlay = CpGuiUtil.createOverlayFromSlice(
-		"cpUi.copy", 
-		{width, height},
-		CpBaseHud.OFF_COLOR,
-		CpBaseHud.alignments.bottomRight)
-	
-	local pasteOverlay = CpGuiUtil.createOverlayFromSlice(
-		"cpUi.paste", 
-		{width, height},
-		CpBaseHud.OFF_COLOR,
-		CpBaseHud.alignments.bottomRight)
-	
-	local clearCourseOverlay = CpGuiUtil.createOverlayFromSlice(
-		"cpIconSprite.clear", 
+		"cpUi.copy",
 		{width, height},
 		CpBaseHud.OFF_COLOR,
 		CpBaseHud.alignments.bottomRight)
 
-	layout.copyButton = CpHudButtonElement.new(copyOverlay, layout)
+	local pasteOverlay = CpGuiUtil.createOverlayFromSlice(
+		"cpUi.paste",
+		{width, height},
+		CpBaseHud.OFF_COLOR,
+		CpBaseHud.alignments.bottomRight)
+
+	local clearCourseOverlay = CpGuiUtil.createOverlayFromSlice(
+		"cpIconSprite.clear",
+		{width, height},
+		CpBaseHud.OFF_COLOR,
+		CpBaseHud.alignments.bottomRight)
+
+	layout.copyButton = CpHudIconButtonElement.new(copyOverlay, layout, btnSize)
 	layout.copyButton:setPosition(rightX, rightY-btnYOffset)
 
-	layout.pasteButton = CpHudButtonElement.new(pasteOverlay, layout)
+	layout.pasteButton = CpHudIconButtonElement.new(pasteOverlay, layout, btnSize)
     layout.pasteButton:setPosition(rightX, rightY-btnYOffset)
 
-	layout.clearCacheBtn = CpHudButtonElement.new(clearCourseOverlay, layout)
-    layout.clearCacheBtn:setPosition(rightX - width - wMargin/2, rightY - btnYOffset)
+	layout.clearCacheBtn = CpHudIconButtonElement.new(clearCourseOverlay, layout, btnSize)
+    layout.clearCacheBtn:setPosition(rightX - btnDistance, rightY - btnYOffset)
 
 	layout.copyCacheText = CpTextHudElement.new(layout, leftX, leftY, CpBaseHud.defaultFontSize)
+	layout.copyCacheText:setTextLimitWidth(rightX - 2 * btnDistance - leftX)
 end
 
 --- Setup for the copy course btn.

@@ -55,6 +55,9 @@ function AITurn:init(vehicle, driveStrategy, ppc, proximityController, turnConte
     self:addState('WAITING_FOR_PATHFINDER')
     self.vehicle = vehicle
     self.workEndHandler = WorkEndHandler(vehicle, driveStrategy)
+    -- (a real turn, from one row to the next: not finishing the work before a connecting path)
+    self.workEndHandler.keepRunning = name ~= 'FinishRow' and driveStrategy.getKeepImplementsRunning ~= nil
+            and driveStrategy:getKeepImplementsRunning()
     self.workStartHandler = WorkStartHandler(vehicle, driveStrategy, turnContext)
     self.settings = vehicle:getCpSettings()
     self.turningRadius = AIUtil.getTurningRadius(self.vehicle)

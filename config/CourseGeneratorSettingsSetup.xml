@@ -13,7 +13,15 @@
 		<Setting classType="AIParameterSettingList" name="multiTools" min="1" max="5" default="1" isExpertModeOnly="true"/>
 		<Setting classType="AIParameterBooleanSetting" name="useSameTurnWidth" isVisible="hasMoreThenOneVehicle" isExpertModeOnly="true"/>
 		<Setting classType="AIParameterSettingList" name="fieldMargin" min="-5" max="6" default="0" incremental="0.2" isExpertModeOnly="true"/>
-		<Setting classType="AIParameterSettingList" name="numberOfHeadlands" min="0" max="40"/>
+		<Setting classType="AIParameterSettingList" name="numberOfHeadlands" min="0" max="40" isDisabled="isNumberOfHeadlandsDisabled"/>
+		<!-- automatic: as many headlands as make up the headland width (CourseCorrect) -->
+		<Setting classType="AIParameterBooleanSetting" name="automaticHeadlands" defaultBool="true">
+			<Texts>
+				<Text>manual</Text>
+				<Text>automatic</Text>
+			</Texts>
+		</Setting>
+		<Setting classType="AIParameterSettingList" name="headlandWidth" min="10" max="100" incremental="5" default="40" unit="2" isVisible="isHeadlandWidthVisible"/>
 		<Setting classType="AIParameterBooleanSetting" name="narrowField" defaultBool="false" isVisible="isNarrowFieldEnabled" isExpertModeOnly="true"/>
 		<Setting classType="AIParameterBooleanSetting" name="startOnHeadland" defaultBool="true" isVisible="canStartOnRows">
 			<Texts>
@@ -60,6 +68,8 @@
 			</Texts>
 		</Setting>
 		<Setting classType="AIParameterBooleanSetting" name="evenRowWidth" defaultBool="false"/>
+		<!-- overlap of neighbouring rows in the middle of the field (CourseCorrect) -->
+		<Setting classType="AIParameterSettingList" name="rowOverlapPercent" min="0" max="20" default="0" unit="4"/>
 		<Setting classType="AIParameterBooleanSetting" name="useBaseLineEdge" defaultBool="false" isExpertModeOnly="true"/>
 		<Setting classType="AIParameterBooleanSetting" name="autoRowAngle" defaultBool="true">
 			<Texts>

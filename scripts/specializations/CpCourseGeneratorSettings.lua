@@ -122,6 +122,41 @@ function CpCourseGeneratorSettings:onUpdate(savegame)
         spec.workWidth:resetToLoadedValue()
     end
     spec.finishedFirstUpdate = true
+    CpCourseGeneratorSettings.applyAutomaticHeadlands(self)
+end
+
+--- Automatic headlands: as many as make up the headland width with the work width (at least one).
+---@return number
+function CpCourseGeneratorSettings:getAutomaticNumberOfHeadlands()
+    local spec = CpCourseGeneratorSettings.getSpec(self)
+    local workWidth = spec.workWidth:getValue()
+    if workWidth == nil or workWidth <= 0 then
+        return spec.numberOfHeadlands:getValue()
+    end
+    return math.max(1, math.min(40, math.ceil(spec.headlandWidth:getValue() / workWidth - 0.001)))
+end
+
+--- With automatic headlands, sets the number of headlands from the headland width. Every side computes the same
+--- from the synchronized settings, so nothing is sent.
+function CpCourseGeneratorSettings:applyAutomaticHeadlands()
+    local spec = CpCourseGeneratorSettings.getSpec(self)
+    if spec.automaticHeadlands == nil or not spec.automaticHeadlands:getValue() then
+        return
+    end
+    local n = CpCourseGeneratorSettings.getAutomaticNumberOfHeadlands(self)
+    if n ~= spec.numberOfHeadlands:getValue() then
+        spec.numberOfHeadlands:setValue(n, true)
+    end
+end
+
+function CpCourseGeneratorSettings:isNumberOfHeadlandsDisabled()
+    local spec = CpCourseGeneratorSettings.getSpec(self)
+    return spec.automaticHeadlands ~= nil and spec.automaticHeadlands:getValue()
+end
+
+function CpCourseGeneratorSettings:isHeadlandWidthVisible()
+    local spec = CpCourseGeneratorSettings.getSpec(self)
+    return spec.automaticHeadlands ~= nil and spec.automaticHeadlands:getValue()
 end
 
 function CpCourseGeneratorSettings:onReadStream(streamId, connection)

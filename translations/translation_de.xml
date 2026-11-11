@@ -1087,5 +1087,168 @@ Das Kreuz sollte jetzt, wie im Bild dargestellt, gelb sein.
     <text name="input_CP_OPEN_COURSEGENERATOR_SETTINGS" text="CP: Kursgenerator/Jobmenü öffnen"/>
     <text name="input_CP_OPEN_COURSEMANAGER" text="CP: Kursmanager öffnen"/>
     <text name="input_CP_OPEN_INGAME_MENU" text="CP: Menu öffnen"/>
+    <text name="CP_global_setting_hudStyle_title" text="HUD-Stil"/>
+    <text name="CP_global_setting_hudStyle_tooltip" text="CourseCorrect: das neue Fenster mit der Kurskarte. Klassisch: das alte HUD."/>
+    <text name="CP_global_setting_hudStyle_classic" text="Klassisch"/>
+    <text name="CP_global_setting_hudStyle_modern" text="CourseCorrect"/>
+    <text name="CP_cc_tab_course" text="Kurs"/>
+    <text name="CP_cc_tab_saved" text="Gespeichert"/>
+    <text name="CP_cc_tab_settings" text="Einstellungen"/>
+    <text name="CP_cc_job_fieldWork" text="Feldarbeit"/>
+    <text name="CP_cc_job_bales" text="Ballen"/>
+    <text name="CP_cc_job_bunkerSilo" text="Silo"/>
+    <text name="CP_cc_job_siloLoader" text="Lader"/>
+    <text name="CP_cc_job_unloader" text="Überlader"/>
+    <text name="CP_cc_status_working" text="Arbeitet · %d%%"/>
+    <text name="CP_cc_status_active" text="Arbeitet"/>
+    <text name="CP_cc_status_ready" text="Bereit"/>
+    <text name="CP_cc_status_noCourse" text="Kein Kurs"/>
+    <text name="CP_cc_status_notReady" text="Kann nicht starten"/>
+    <text name="CP_cc_status_otherHelper" text="Anderer Helfer aktiv"/>
+    <text name="CP_cc_status_recording" text="Aufnahme"/>
+    <text name="CP_cc_status_recordingPaused" text="Aufnahme pausiert"/>
+    <text name="CP_cc_progress_left" text="noch %s"/>
+    <text name="CP_cc_summary" text="%.1f ha · %d Vorgewende · %d Reihen · %.1f km"/>
+    <text name="CP_cc_summaryNoField" text="%d Vorgewende · %d Reihen · %.1f km"/>
+    <text name="CP_cc_detail_area" text="Fläche"/>
+    <text name="CP_cc_detail_length" text="Länge"/>
+    <text name="CP_cc_detail_working" text="Arbeitsweg"/>
+    <text name="CP_cc_detail_headlands" text="Vorgewende"/>
+    <text name="CP_cc_detail_rows" text="Reihen"/>
+    <text name="CP_cc_detail_turns" text="Wenden"/>
+    <text name="CP_cc_detail_waypoints" text="Wegpunkte"/>
+    <text name="CP_cc_detail_workWidth" text="Arbeitsbreite"/>
+    <text name="CP_cc_detail_multiTools" text="Fahrzeuge"/>
+    <text name="CP_cc_detail_timeLeft" text="Restzeit"/>
+    <text name="CP_cc_settingsChanged" text="Einstellungen geändert: Neuer Kurs erstellt den Kurs damit"/>
+    <text name="CP_cc_moreSettings" text="Mehr Einstellungen"/>
+    <text name="CP_cc_lessSettings" text="Weniger Einstellungen"/>
+    <text name="CP_cc_startAt" text="Start bei"/>
+    <text name="CP_cc_generating" text="Feld wird gesucht und der Kurs erstellt..."/>
+    <text name="CP_cc_hint_noCourse" text="Noch kein Kurs. %s erstellt einen für das Feld, auf dem du stehst."/>
+    <text name="CP_cc_clear_ask" text="Den Kurs von diesem Fahrzeug löschen?"/>
+    <text name="CP_cc_copied" text="Kopiert: %s. Auf einem Fahrzeug ohne Kurs einfügen."/>
+    <text name="CP_cc_record_start" text="Kurs aufnehmen"/>
+    <text name="CP_cc_record_running" text="Kurs wird aufgenommen: abfahren, Stopp speichert ihn."/>
+    <text name="CP_cc_record_paused" text="Aufnahme pausiert: Weiter nimmt weiter auf."/>
+    <text name="CP_cc_record_hint" text="CourseCorrect nimmt den gefahrenen Weg auf."/>
+    <text name="CP_cc_mini_noCourse" text="Kein Kurs"/>
+    <text name="CP_cc_btn_start" text="Start"/>
+    <text name="CP_cc_btn_stop" text="Stopp"/>
+    <text name="CP_cc_btn_stopHelper" text="Helfer stoppen"/>
+    <text name="CP_cc_btn_newCourse" text="Neuer Kurs"/>
+    <text name="CP_cc_btn_makeCourse" text="Kurs erstellen"/>
+    <text name="CP_cc_btn_clear" text="Löschen"/>
+    <text name="CP_cc_btn_cancel" text="Abbrechen"/>
+    <text name="CP_cc_btn_reverse" text="Umkehren"/>
+    <text name="CP_cc_btn_copy" text="Kopieren"/>
+    <text name="CP_cc_btn_forget" text="Kopie verwerfen"/>
+    <text name="CP_cc_btn_paste" text="%s einfügen"/>
+    <text name="CP_cc_btn_savedCourses" text="Gespeicherte Kurse"/>
+    <text name="CP_cc_btn_positions" text="Positionen auf Karte"/>
+    <text name="CP_cc_btn_pause" text="Pause"/>
+    <text name="CP_cc_btn_resume" text="Weiter"/>
+    <text name="CP_cc_btn_stopRecording" text="Aufnahme beenden"/>
+    <text name="CP_cc_info_bales" text="Sammelt oder wickelt die Ballen auf diesem Feld, die nächsten zuerst."/>
+    <text name="CP_cc_info_bunkerSilo" text="Fährt das Fahrsilo Bahn für Bahn auf und ab, schiebt und verdichtet es."/>
+    <text name="CP_cc_info_siloLoader" text="Lädt von einem Haufen oder Fahrsilo in Anhänger an der auf der Karte gesetzten Abladeposition."/>
+    <text name="CP_cc_info_unloader" text="Überlädt Drescher auf dem Feld und bringt die Ladung zur auf der Karte gesetzten Abladeposition."/>
+    <text name="CP_cc_role_unloader" text="Überlader"/>
+    <text name="CP_cc_role_autoDrive" text="AutoDrive"/>
+    <text name="CP_cc_role_worker" text="Feldarbeit"/>
+    <text name="CP_cc_role_helper" text="Helfer"/>
+    <text name="CP_cc_others_more" text="+%d weitere"/>
+    <text name="CP_cc_unloader_noField" text="Sein Feld erscheint hier, sobald es auf der Karte gesetzt ist oder es an einem Feld steht, das ein Courseplay-Mähdrescher bearbeitet."/>
+    <text name="CP_cc_tab_fleet" text="Fuhrpark"/>
+    <text name="CP_cc_fleet_empty" text="Kein Courseplay- oder AutoDrive-Fahrzeug auf dem Hof."/>
+    <text name="CP_cc_fleet_idle" text="Steht"/>
+    <text name="CP_cc_fleet_you" text="(du)"/>
+    <text name="CP_cc_fleet_count" text="%d von %d arbeiten"/>
+    <text name="CP_cc_btn_goToCombine" text="Zum Drescher"/>
+    <text name="CP_cc_go_unloaderSent" text="AutoDrive fährt es zu %s, von dort fährt es den Drescher ab."/>
+    <text name="CP_cc_btn_callTruck" text="Abfahrer rufen"/>
+    <text name="CP_cc_call_ask" text="Welcher Abfahrer soll kommen?"/>
+    <text name="CP_cc_call_none" text="Kein freier Abfahrer mit Anhänger auf dem Hof."/>
+    <text name="CP_cc_call_started" text="%s fährt hier jetzt ab."/>
+    <text name="CP_cc_call_sent" text="AutoDrive bringt %s zu %s, von dort fährt es den Drescher ab."/>
+    <text name="CP_cc_call_noWay" text="%s hat keinen AutoDrive-Punkt an diesem Feld, fahre es erst her."/>
+    <text name="CP_cc_call_failed" text="%s konnte nicht starten."/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_title" text="Automatische Vorgewende"/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_tooltip" text="Automatisch: so viele Vorgewende, wie mit der Arbeitsbreite die Vorgewendebreite ergeben."/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_manual" text="manuell"/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_automatic" text="automatisch"/>
+    <text name="CP_vehicle_courseGeneratorSetting_headlandWidth_title" text="Vorgewendebreite"/>
+    <text name="CP_vehicle_courseGeneratorSetting_headlandWidth_tooltip" text="Bei automatischen Vorgewenden: wie breit alle Vorgewende zusammen mindestens sind."/>
+    <text name="CP_cc_headlands" text="Vorgewende"/>
+    <text name="CP_cc_headlands_auto" text="auto · %d m (%d)"/>
+    <text name="CP_cc_headlands_setNumber" text="Anzahl festlegen"/>
+    <text name="CP_cc_headlands_automatic" text="Automatisch (nach Breite)"/>
+    <text name="CP_cc_status_autoDrive" text="AutoDrive"/>
+    <text name="CP_cc_status_autoDriveTo" text="AutoDrive · %s"/>
+    <text name="CP_cc_btn_stopAutoDrive" text="AutoDrive stoppen"/>
+    <text name="CP_cc_go_sent" text="AutoDrive fährt es zu %s, CourseCorrect startet dort den Kurs."/>
+    <text name="CP_cc_go_noMarker" text="Kein AutoDrive-Ziel nahe diesem Feld: CourseCorrect startet von hier."/>
+    <text name="CP_cc_hint_noFieldwork" text="Kein Feldgerät angehängt: Feldarbeit und Kurse (neu, gespeichert) erscheinen hier, sobald eins angehängt ist."/>
+    <text name="CP_cc_saved_save" text="Diesen Kurs speichern"/>
+    <text name="CP_cc_saved_saveTitle" text="Name des Kurses"/>
+    <text name="CP_cc_saved_saved" text="Gespeichert: %s"/>
+    <text name="CP_cc_saved_saveFailed" text="%s konnte nicht gespeichert werden."/>
+    <text name="CP_cc_saved_exists" text="%s gibt es schon."/>
+    <text name="CP_cc_saved_allFolders" text="&lt; Alle Ordner"/>
+    <text name="CP_cc_saved_newFolder" text="Neuer Ordner"/>
+    <text name="CP_cc_saved_count" text="%d Einträge"/>
+    <text name="CP_cc_saved_empty" text="Hier ist noch nichts gespeichert."/>
+    <text name="CP_cc_saved_open" text="Öffnen"/>
+    <text name="CP_cc_saved_load" text="Laden"/>
+    <text name="CP_cc_saved_go" text="Los"/>
+    <text name="CP_cc_saved_rename" text="Umbenennen"/>
+    <text name="CP_cc_saved_delete" text="Löschen"/>
+    <text name="CP_cc_saved_deleteAsk" text="%s löschen?"/>
+    <text name="CP_cc_saved_deleted" text="Gelöscht: %s"/>
+    <text name="CP_cc_saved_deleteFailed" text="%s konnte nicht gelöscht werden."/>
+    <text name="CP_cc_saved_folderNotEmpty" text="%s ist nicht leer."/>
+    <text name="CP_cc_saved_loaded" text="Geladen: %s"/>
+    <text name="CP_cc_saved_loadFailed" text="%s konnte nicht geladen werden."/>
+    <text name="CP_cc_saved_goNeedsImplement" text="Los (laden, mit AutoDrive hinfahren und starten) braucht ein angehängtes Feldgerät."/>
+    <text name="CP_cc_saved_openManager" text="Volle Kursverwaltung (verschieben, kopieren, Editor)"/>
+    <text name="CP_cc_saved_courseCount" text="Kurse: %d"/>
+    <text name="CP_cc_saved_entryCount" text="Einträge: %d"/>
+    <text name="CP_cc_settings_vehicle" text="Fahrzeug"/>
+    <text name="CP_cc_settings_generator" text="Kursgenerator"/>
+    <text name="CP_cc_settings_global" text="Global"/>
+    <text name="CP_cc_settings_fields" text="Felder"/>
+    <text name="CP_cc_settings_vines" text="Reben"/>
+    <text name="CP_cc_settings_none" text="Hier gibt es keine Einstellungen für dieses Fahrzeug."/>
+    <text name="CP_cc_settings_help" text="CourseCorrect-Hilfe"/>
+    <text name="CP_cc_settings_menu" text="Volles Einstellungsmenü"/>
+    <text name="CP_cc_start_nearest" text="Nächster"/>
+    <text name="CP_cc_start_first" text="Erster"/>
+    <text name="CP_cc_start_last" text="Letzter"/>
+    <text name="CP_cc_key_prevTab" text="CourseCorrect: vorheriger Reiter"/>
+    <text name="CP_cc_key_nextTab" text="CourseCorrect: nächster Reiter"/>
+    <text name="CP_cc_key_back" text="CourseCorrect: zurück zum Fahren"/>
+    <text name="CP_cc_key_select" text="Auswählen"/>
+    <text name="CP_cc_key_change" text="Ändern"/>
+    <text name="CP_cc_key_list" text="Werteliste"/>
+    <text name="CP_cc_key_pick" text="Übernehmen"/>
+    <text name="CP_cc_onArrival" text="Bei Ankunft"/>
+    <text name="CP_cc_onArrival_start" text="Starten"/>
+    <text name="CP_cc_onArrival_stay" text="Warten"/>
+    <text name="CP_cc_go_sentStay" text="AutoDrive fährt es zu %s."/>
+    <text name="CP_cc_map_hide" text="Karte ausblenden"/>
+    <text name="CP_cc_map_show" text="Karte zeigen"/>
+    <text name="CP_cc_detail_course" text="Kurs"/>
+    <text name="CP_cc_detail_waypoint" text="Wegpunkt"/>
+    <text name="CP_cc_lines" text="Kurslinien"/>
+    <text name="CP_cc_lines_off" text="Aus"/>
+    <text name="CP_cc_lines_startStop" text="Enden"/>
+    <text name="CP_cc_lines_near" text="Nah"/>
+    <text name="CP_cc_lines_all" text="Alle"/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_title" text="Beim Ausheben"/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_tooltip" text="In Wendemanövern werden die Geräte ausgehoben. Ausschalten: das Spiel schaltet sie auch aus. Weiterlaufen: was lief, bleibt an, bis es wieder abgesenkt wird, ohne Aus- und Hochlaufen (Mähwerke, Feldhäcksler, Wender)."/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_switchOff" text="ausschalten"/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_keepRunning" text="weiterlaufen"/>
+    <text name="CP_vehicle_courseGeneratorSetting_rowOverlapPercent_title" text="Überlappung Spuren"/>
+    <text name="CP_vehicle_courseGeneratorSetting_rowOverlapPercent_tooltip" text="Benachbarte Spuren in der Feldmitte überlappen um so viel der Arbeitsbreite, damit leichtes Abdriften keine unbearbeiteten Streifen dazwischen lässt (breite oder gezogene Geräte, Hänge). 0 %: Spuren genau eine Arbeitsbreite auseinander. Vorgewendebahnen haben ihre eigene Überlappung. Danach einen neuen Kurs erstellen."/>
   </texts>
 </l10n>

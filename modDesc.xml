@@ -3,7 +3,7 @@
     <version>8.1.0.3</version>
 	<author><![CDATA[Courseplay.devTeam]]></author>
 	<title>
-		<en>CoursePlay</en>
+		<en>CourseCorrect</en>
 		<cs>自动作业</cs>
 		<ct>自動作業</ct>
 		<hu>CoursePlay - A Vezetősegéd</hu>
@@ -323,6 +323,8 @@ Changelog 8.1.0.3
 		<sourceFile filename="scripts/gui/hud/CpCombineUnloaderHudPage.lua"/>
 		<sourceFile filename="scripts/gui/hud/CpBunkerSiloWorkerHudPage.lua"/>
 		<sourceFile filename="scripts/gui/hud/CpSiloLoaderWorkerHudPage.lua"/>
+		<sourceFile filename="scripts/gui/hud/CpHudDraw.lua"/>
+		<sourceFile filename="scripts/gui/hud/CpModernHud.lua"/>
 
 		<sourceFile filename="scripts/editor/brushes/BaseBrush.lua"/>
 		<sourceFile filename="scripts/editor/brushes/basic/InsertWaypoint.lua"/>

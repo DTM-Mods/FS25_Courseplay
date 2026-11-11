@@ -61,6 +61,13 @@
 				<Text>early</Text>
 			</Texts>
 		</Setting>
+		<!--CourseCorrect: when lifted in a turn, keep the implements switched on (no spinning down and up again)-->
+		<Setting classType="AIParameterBooleanSetting" name="keepImplementsRunning" defaultBool="false" isVisible="areCourseSettingsVisible">
+			<Texts>
+				<Text>switchOff</Text>
+				<Text>keepRunning</Text>
+			</Texts>
+		</Setting>
 		<!--Tool Offset X-->
 		<Setting classType="AIParameterSettingList" name="toolOffsetX" min="-10" max="10" incremental="0.1" default="0" unit="2"
 				 onChangeCallback="cpShowWorkWidth" setDefault="setAutomaticWorkWidthAndOffset" isVisible="isToolOffsetVisible"

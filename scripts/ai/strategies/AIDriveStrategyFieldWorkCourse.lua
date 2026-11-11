@@ -156,6 +156,12 @@ function AIDriveStrategyFieldWorkCourse:getDriveData(dt, vX, vY, vZ)
         gx, _, gz = self.ppc:getGoalPointPosition()
     end
     ----------------------------------------------------------------
+    -- CourseCorrect, When lifted: Keep running (only while turning)
+    if self.state == self.states.TURNING then
+        self:updateKeptRunning(dt)
+    else
+        self.keptRunning = nil
+    end
     if self.state == self.states.INITIAL then
         -- We need a separate phase for preparing to make sure that the
         --   * onAIFieldWorkerStart,
@@ -696,6 +702,46 @@ end
 
 function AIDriveStrategyFieldWorkCourse:getLoweringDurationMs()
     return self.loweringDurationMs
+end
+
+------------------------------------------------------------------------------------------------------------------------
+--- CourseCorrect, When lifted: Keep running (vehicle setting keepImplementsRunning): what was switched on stays on
+--- while it is lifted for a turn (the game switches it off as it lifts it, now or a moment later), till it is lowered
+--- at the end of the turn. Saves the time spinning down and up again (mowers, forage harvesters, tedders...).
+------------------------------------------------------------------------------------------------------------------------
+AIDriveStrategyFieldWorkCourse.KEEP_RUNNING_INTERVAL_MS = 500
+
+function AIDriveStrategyFieldWorkCourse:getKeepImplementsRunning()
+    local setting = self.settings.keepImplementsRunning
+    return setting ~= nil and setting:getValue()
+end
+
+--- An implement just lifted for a turn that was switched on: on again, and kept on during the turn
+function AIDriveStrategyFieldWorkCourse:keepImplementRunning(object)
+    self.keptRunning = self.keptRunning or {}
+    table.insert(self.keptRunning, object)
+    self.keepRunningTimer = 0
+    self:switchKeptOn()
+end
+
+function AIDriveStrategyFieldWorkCourse:switchKeptOn()
+    for _, object in ipairs(self.keptRunning or {}) do
+        if not object.isDeleted and not object:getIsTurnedOn()
+                and (object.getCanBeTurnedOn == nil or object:getCanBeTurnedOn()) then
+            object:setIsTurnedOn(true)
+        end
+    end
+end
+
+function AIDriveStrategyFieldWorkCourse:updateKeptRunning(dt)
+    if self.keptRunning == nil then
+        return
+    end
+    self.keepRunningTimer = (self.keepRunningTimer or 0) + (dt or 0)
+    if self.keepRunningTimer >= AIDriveStrategyFieldWorkCourse.KEEP_RUNNING_INTERVAL_MS then
+        self.keepRunningTimer = 0
+        self:switchKeptOn()
+    end
 end
 
 function AIDriveStrategyFieldWorkCourse:getImplementRaiseLate()

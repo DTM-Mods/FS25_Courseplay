@@ -37,6 +37,8 @@ AIDriveStrategyFindBales.myStates = {
 --- Offset to apply at the goal marker, so we don't crash with an empty unloader waiting there with the same position.
 AIDriveStrategyFindBales.invertedGoalPositionOffset = -4.5
 AIDriveStrategyFindBales.minStartDistanceToField = 20
+--- Off-field penalty for routes to bales (default PathfinderContext.defaultOffFieldPenalty is 7.5)
+AIDriveStrategyFindBales.offFieldPenalty = 100
 
 function AIDriveStrategyFindBales:init(task, job)
     AIDriveStrategyCourse.init(self, task, job)
@@ -52,6 +54,9 @@ function AIDriveStrategyFindBales:delete()
     g_baleToCollectManager:unlockBalesByDriver(self)
     if self.invertedStartPositionMarkerNode then
         CpUtil.destroyNode(self.invertedStartPositionMarkerNode)
+    end
+    for _, stuck in pairs(self.stuckAtBale or {}) do
+        CpUtil.destroyNode(stuck.node)
     end
 end
 
@@ -95,6 +100,9 @@ end
 function AIDriveStrategyFindBales:initializeImplementControllers(vehicle)
     --- The bale loader/wrapper variable is used to check if a bale loader or wrapper was found.
     self.baleWrapper, self.baleWrapperController = self:addImplementController(vehicle, BaleWrapperController, BaleWrapper, {}, nil)
+    if self.baleWrapperController then
+        self.baleWrapperController:setKeepDrivingWhileWrapping(true)
+    end
     self.baleLoader, self.baleLoaderController = self:addImplementController(vehicle, BaleLoaderController, BaleLoader, {}, nil)
     self.baleLoader = self.baleLoader or self:addImplementController(vehicle, APalletAutoLoaderController, nil, {}, "spec_aPalletAutoLoader")
     self.baleLoader = self.baleLoader or self:addImplementController(vehicle, UniversalAutoloadController, nil, {}, "spec_universalAutoload")
@@ -215,7 +223,7 @@ function AIDriveStrategyFindBales:findBales()
         if isValid and g_baleToCollectManager:isValidBale(object) then
             local bale = BaleToCollect(object)
             -- if the bale has a mountObject it is already on the loader so ignore it
-            if not object.mountObject and
+            if not object.mountObject and not self:isBaleGivenUp(object) and
                     g_currentMission.accessHandler:canFarmAccess(self.vehicle:getOwnerFarmId(), object) and
                     self:isBaleOnField(bale) then
                 -- bales may .have multiple nodes, using the object.id deduplicates the list
@@ -374,6 +382,7 @@ function AIDriveStrategyFindBales:onPathfindingFinished(controller,
     if self.state == self.states.DRIVING_TO_NEXT_BALE then
         if success then
             self.balesTried = {}
+            self.reverseBlockedAtFieldEdge = false
             self:startCourse(course, 1)
             self:onStartDrivingToBale()
         else
@@ -383,6 +392,8 @@ function AIDriveStrategyFindBales:onPathfindingFinished(controller,
                     -- there may be another bale too close to the previous one
                     self:debug('Finding path to next bale failed, goal node invalid.')
                     self:retryPathfindingWithAnotherBale()
+                elseif self.reverseBlockedAtFieldEdge then
+                    self:tryAnotherBaleInsteadOfReversing()
                 elseif self:isNearFieldEdge() then
                     self.balesTried = {}
                     self:debug('Finding path to next bale failed, we are close to the field edge, back up a bit and then try again')
@@ -429,6 +440,14 @@ function AIDriveStrategyFindBales:getPathfinderBaleTargetAsGoalNode(bale)
     local safeDistanceFromBale = bale:getSafeDistance()
     local halfVehicleWidth = AIUtil.getWidth(self.vehicle) / 2
     local goal = self:getBaleTarget(bale)
+    local stuck = self.stuckAtBale and self.stuckAtBale[bale:getBaleObject()]
+    if stuck then
+        -- we got stuck the last time, come at the bale from a different direction
+        goal.t = stuck.heading + self.retryHeadingOffsets[math.min(stuck.count, #self.retryHeadingOffsets)]
+        self:debug('Got stuck %d time(s) at bale %d, approaching it %.0f degrees from the first direction',
+                stuck.count, bale:getId(), math.deg(goal.t - stuck.heading))
+    end
+    self.lastGoalHeading = goal.t
     local configuredOffset = self:getConfiguredOffset()
     local offset = Vector(0, safeDistanceFromBale + configuredOffset)
     goal:add(offset:rotate(goal.t))
@@ -441,12 +460,20 @@ end
 ---@param bale BaleToCollect
 function AIDriveStrategyFindBales:startPathfindingToBale(bale)
     self.state = self.states.DRIVING_TO_NEXT_BALE
+    self.targetBale = bale
     g_baleToCollectManager:lockBale(bale:getBaleObject(), self)
     local objectsToIgnore = self:getBalesToIgnore()
     -- ignore the target bale, we actually want to hit it, there really is no reason to trigger collisions with it
     table.insert(objectsToIgnore, bale:getBaleObject())
     local context = PathfinderContext(self.vehicle):objectsToIgnore(objectsToIgnore)
     context:allowReverse(false):maxFruitPercent(self.settings.avoidFruit:getValue() and 10 or math.huge)
+    -- the bales are on the field, so stay on the field: leaving it costs so much it's practically never chosen
+    context:offFieldPenalty(self.offFieldPenalty)
+    local stuck = self.stuckAtBale and self.stuckAtBale[bale:getBaleObject()]
+    if stuck then
+        -- and keep away from the spot where we got stuck
+        context:areaToAvoid(stuck.area)
+    end
     table.insert(self.balesTried, bale)
     self.pathfinderController:registerListeners(self, self.onPathfindingFinished, nil,
             self.onPathfindingObstacleAtStart)
@@ -464,9 +491,32 @@ end
 
 function AIDriveStrategyFindBales:onPathfindingObstacleAtStart(controller, lastContext, maxDistance, trailerCollisionsOnly)
     g_baleToCollectManager:unlockBalesByDriver(self)
+    if self.reverseBlockedAtFieldEdge then
+        -- balesTried is kept, so every bale is tried once and then we give up instead of looping
+        self:tryAnotherBaleInsteadOfReversing()
+        return
+    end
     self.balesTried = {}
     self:debug('Pathfinding detected obstacle at start, back up and retry')
     self:startReversing(self.states.REVERSING_DUE_TO_OBSTACLE_AHEAD)
+end
+
+--- The reverse after a failed pathfinding is a blind straight line, so stop it before the back of the
+--- last implement leaves the field.
+function AIDriveStrategyFindBales:stopReversingAtFieldEdge()
+    local implement = AIUtil.getLastAttachedImplement(self.vehicle, true)
+    local x, _, z = localToWorld(implement.rootNode, 0, 0, -implement.size.length / 2 + implement.size.lengthOffset)
+    if not CpMathUtil.isPointInPolygon(self.vehicle:cpGetFieldPolygon(), x, z) then
+        self:debug('Reversing would take us off the field, stopping at the edge')
+        self.reverseBlockedAtFieldEdge = true
+        self.state = self.states.SEARCHING_FOR_NEXT_BALE
+    end
+end
+
+--- Can't back up any further without leaving the field: try another bale instead of reversing again.
+function AIDriveStrategyFindBales:tryAnotherBaleInsteadOfReversing()
+    self:debug('At the field edge, not reversing again, trying another bale')
+    self:retryPathfindingWithAnotherBale()
 end
 
 function AIDriveStrategyFindBales:startReversing(state)
@@ -562,14 +612,38 @@ function AIDriveStrategyFindBales:getDriveData(dt, vX, vY, vZ)
         self:setMaxSpeed(0)
     elseif self.state == self.states.REVERSING_AFTER_PATHFINDER_FAILURE then
         self:setMaxSpeed(self.settings.reverseSpeed:getValue())
+        self:stopReversingAtFieldEdge()
     elseif self.state == self.states.REVERSING_DUE_TO_OBSTACLE_AHEAD then
         self:setMaxSpeed(self.settings.reverseSpeed:getValue())
+        self:stopReversingAtFieldEdge()
     elseif self.state == self.states.DRIVING_TO_START_MARKER then
         self:setMaxSpeed(self.settings.fieldSpeed:getValue())
     elseif self.state == self.states.WAITING_FOR_IMPLEMENTS_TO_FOLD then
-        self:setFinished()
+        if self.baleWrapperController and self.baleWrapperController:isWorking() then
+            self:debugSparse('Waiting for the wrapper to finish the last bale ..')
+        else
+            self:setFinished()
+        end
         self:setMaxSpeed(0) --- folding
     end
+
+    if self.baleWrapperController then
+        if self.baleWrapperController:isWorking() then
+            if self.state == self.states.APPROACHING_BALE then
+                -- the wrapper can't grab the next bale until the previous one is dropped
+                self:setMaxSpeed(0)
+            else
+                -- drive slowly on to the next bale while wrapping
+                self:setMaxSpeed(self.settings.fieldWorkSpeed:getValue() / 2)
+            end
+        elseif self.wrappingPreviousBale then
+            self.wrappingPreviousBale = false
+            self.lastBale = self.baleWrapperController:getLastDroppedBale() or self.lastBale
+            self:debug('Bale wrapped and dropped, last dropped bale %s', tostring(self.lastBale))
+        end
+    end
+
+    self:checkIfStuck()
 
     local moveForwards = not self.ppc:isReversing()
     local gx, gz
@@ -584,6 +658,56 @@ function AIDriveStrategyFindBales:getDriveData(dt, vX, vY, vZ)
     return gx, gz, moveForwards, self.maxSpeed, 100
 end
 
+--- Stuck on the way to a bale (tree, fence, curb): we want to move, but haven't for isStuckMs.
+--- Leave that bale for later and go for the next closest one. Next time, come at it from a different
+--- direction (these offsets from the direction we first got stuck in, in turn) and keep away from the
+--- spot we got stuck at. Stuck from every direction: the bale is left on the field for good.
+AIDriveStrategyFindBales.isStuckMs = 1000 * 15
+AIDriveStrategyFindBales.retryHeadingOffsets = { math.pi, math.pi / 2, -math.pi / 2 }
+AIDriveStrategyFindBales.maxStuckPerBale = #AIDriveStrategyFindBales.retryHeadingOffsets + 1
+
+function AIDriveStrategyFindBales:checkIfStuck()
+    local tryingToMove = (self.state == self.states.DRIVING_TO_NEXT_BALE or
+            self.state == self.states.APPROACHING_BALE) and
+            not self.pathfinderController:isActive() and (self.maxSpeed or 0) > 0
+    if not tryingToMove or not AIUtil.isStopped(self.vehicle) then
+        self.stuckSince = nil
+        return
+    end
+    self.stuckSince = self.stuckSince or g_time
+    if g_time - self.stuckSince < self.isStuckMs then
+        return
+    end
+    self.stuckSince = nil
+    self.stuckAtBale = self.stuckAtBale or {}
+    local baleObject = self.targetBale and self.targetBale:getBaleObject()
+    if baleObject then
+        local stuck = self.stuckAtBale[baleObject] or { count = 0, heading = self.lastGoalHeading or 0 }
+        stuck.count = stuck.count + 1
+        -- remember the spot: the area in front of where we are now
+        CpUtil.destroyNode(stuck.node)
+        local directionNode = self.vehicle:getAIDirectionNode()
+        local x, _, z = getWorldTranslation(directionNode)
+        local _, yRot, _ = getWorldRotation(directionNode)
+        stuck.node = CpUtil.createNode('Bale finder stuck spot', x, z, yRot)
+        stuck.area = PathfinderUtil.NodeArea(stuck.node, -4, -2, 8, 10)
+        self.stuckAtBale[baleObject] = stuck
+        self:info('Stuck for %d s on the way to bale %d (%d. time), trying the next bale',
+                self.isStuckMs / 1000, self.targetBale:getId(), stuck.count)
+    else
+        self:info('Stuck for %d s, trying the next bale', self.isStuckMs / 1000)
+    end
+    g_baleToCollectManager:unlockBalesByDriver(self)
+    self.balesTried = {}
+    self:collectNextBale()
+end
+
+--- Did we get stuck at this bale too often to try it again?
+function AIDriveStrategyFindBales:isBaleGivenUp(baleObject)
+    local stuck = self.stuckAtBale and self.stuckAtBale[baleObject]
+    return stuck ~= nil and stuck.count >= self.maxStuckPerBale
+end
+
 function AIDriveStrategyFindBales:approachBale()
     if self.baleLoaderController then
         if self.baleLoaderController:isGrabbingBale() then
@@ -593,10 +717,14 @@ function AIDriveStrategyFindBales:approachBale()
         end
     elseif self.baleWrapper then
         self.baleWrapperController:handleBaleWrapper()
-        if self.baleWrapperController:isWorking() then
-            self:debug('Start wrapping bale')
-            self.state = self.states.WORKING_ON_BALE
+        -- while the previous bale is still being wrapped, the wrapper is busy with that one, not this one
+        if self.baleWrapperController:isWorking() and not self.wrappingPreviousBale then
+            -- ignore the bale on the wrapper (and later dropped), so the pathfinder doesn't think it is blocked
+            self.lastBale = self.baleWrapperController:getBaleOnWrapper()
+            self.wrappingPreviousBale = true
+            self:debug('Start wrapping bale %s, driving on to the next one', tostring(self.lastBale))
             self.numBalesLeftOver = math.max(self.numBalesLeftOver - 1, 0)
+            self:collectNextBale()
         end
     else
         if self:isReadyToLoadNextBale() then 

@@ -3280,4 +3280,630 @@ TPS extension
 		</Translation>
 		-->
 	</Category>
+	<Category name="CourseCorrect">
+		<Translation name="CP_global_setting_hudStyle_title">
+			<Text language="de"><![CDATA[HUD-Stil]]></Text>
+			<Text language="en"><![CDATA[HUD style]]></Text>
+		</Translation>
+		<Translation name="CP_global_setting_hudStyle_tooltip">
+			<Text language="de"><![CDATA[CourseCorrect: das neue Fenster mit der Kurskarte. Klassisch: das alte HUD.]]></Text>
+			<Text language="en"><![CDATA[CourseCorrect: the new panel with the course map. Classic: the old HUD.]]></Text>
+		</Translation>
+		<Translation name="CP_global_setting_hudStyle_classic">
+			<Text language="de"><![CDATA[Klassisch]]></Text>
+			<Text language="en"><![CDATA[Classic]]></Text>
+		</Translation>
+		<Translation name="CP_global_setting_hudStyle_modern">
+			<Text language="de"><![CDATA[CourseCorrect]]></Text>
+			<Text language="en"><![CDATA[CourseCorrect]]></Text>
+		</Translation>
+		<Translation name="CP_cc_tab_course">
+			<Text language="de"><![CDATA[Kurs]]></Text>
+			<Text language="en"><![CDATA[Course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_tab_saved">
+			<Text language="de"><![CDATA[Gespeichert]]></Text>
+			<Text language="en"><![CDATA[Saved]]></Text>
+		</Translation>
+		<Translation name="CP_cc_tab_settings">
+			<Text language="de"><![CDATA[Einstellungen]]></Text>
+			<Text language="en"><![CDATA[Settings]]></Text>
+		</Translation>
+		<Translation name="CP_cc_job_fieldWork">
+			<Text language="de"><![CDATA[Feldarbeit]]></Text>
+			<Text language="en"><![CDATA[Field work]]></Text>
+		</Translation>
+		<Translation name="CP_cc_job_bales">
+			<Text language="de"><![CDATA[Ballen]]></Text>
+			<Text language="en"><![CDATA[Bales]]></Text>
+		</Translation>
+		<Translation name="CP_cc_job_bunkerSilo">
+			<Text language="de"><![CDATA[Silo]]></Text>
+			<Text language="en"><![CDATA[Silo]]></Text>
+		</Translation>
+		<Translation name="CP_cc_job_siloLoader">
+			<Text language="de"><![CDATA[Lader]]></Text>
+			<Text language="en"><![CDATA[Loader]]></Text>
+		</Translation>
+		<Translation name="CP_cc_job_unloader">
+			<Text language="de"><![CDATA[Überlader]]></Text>
+			<Text language="en"><![CDATA[Unloader]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_working">
+			<Text language="de"><![CDATA[Arbeitet · %d%%]]></Text>
+			<Text language="en"><![CDATA[Working · %d%%]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_active">
+			<Text language="de"><![CDATA[Arbeitet]]></Text>
+			<Text language="en"><![CDATA[Working]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_ready">
+			<Text language="de"><![CDATA[Bereit]]></Text>
+			<Text language="en"><![CDATA[Ready]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_noCourse">
+			<Text language="de"><![CDATA[Kein Kurs]]></Text>
+			<Text language="en"><![CDATA[No course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_notReady">
+			<Text language="de"><![CDATA[Kann nicht starten]]></Text>
+			<Text language="en"><![CDATA[Can't start]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_otherHelper">
+			<Text language="de"><![CDATA[Anderer Helfer aktiv]]></Text>
+			<Text language="en"><![CDATA[Other helper active]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_recording">
+			<Text language="de"><![CDATA[Aufnahme]]></Text>
+			<Text language="en"><![CDATA[Recording]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_recordingPaused">
+			<Text language="de"><![CDATA[Aufnahme pausiert]]></Text>
+			<Text language="en"><![CDATA[Recording paused]]></Text>
+		</Translation>
+		<Translation name="CP_cc_progress_left">
+			<Text language="de"><![CDATA[noch %s]]></Text>
+			<Text language="en"><![CDATA[%s left]]></Text>
+		</Translation>
+		<Translation name="CP_cc_summary">
+			<Text language="de"><![CDATA[%.1f ha · %d Vorgewende · %d Reihen · %.1f km]]></Text>
+			<Text language="en"><![CDATA[%.1f ha · %d headlands · %d rows · %.1f km]]></Text>
+		</Translation>
+		<Translation name="CP_cc_summaryNoField">
+			<Text language="de"><![CDATA[%d Vorgewende · %d Reihen · %.1f km]]></Text>
+			<Text language="en"><![CDATA[%d headlands · %d rows · %.1f km]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_area">
+			<Text language="de"><![CDATA[Fläche]]></Text>
+			<Text language="en"><![CDATA[Area]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_length">
+			<Text language="de"><![CDATA[Länge]]></Text>
+			<Text language="en"><![CDATA[Length]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_working">
+			<Text language="de"><![CDATA[Arbeitsweg]]></Text>
+			<Text language="en"><![CDATA[Working]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_headlands">
+			<Text language="de"><![CDATA[Vorgewende]]></Text>
+			<Text language="en"><![CDATA[Headlands]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_rows">
+			<Text language="de"><![CDATA[Reihen]]></Text>
+			<Text language="en"><![CDATA[Rows]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_turns">
+			<Text language="de"><![CDATA[Wenden]]></Text>
+			<Text language="en"><![CDATA[Turns]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_waypoints">
+			<Text language="de"><![CDATA[Wegpunkte]]></Text>
+			<Text language="en"><![CDATA[Waypoints]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_workWidth">
+			<Text language="de"><![CDATA[Arbeitsbreite]]></Text>
+			<Text language="en"><![CDATA[Work width]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_multiTools">
+			<Text language="de"><![CDATA[Fahrzeuge]]></Text>
+			<Text language="en"><![CDATA[Vehicles]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_timeLeft">
+			<Text language="de"><![CDATA[Restzeit]]></Text>
+			<Text language="en"><![CDATA[Time left]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settingsChanged">
+			<Text language="de"><![CDATA[Einstellungen geändert: Neuer Kurs erstellt den Kurs damit]]></Text>
+			<Text language="en"><![CDATA[Settings changed: New course makes the course with them]]></Text>
+		</Translation>
+		<Translation name="CP_cc_moreSettings">
+			<Text language="de"><![CDATA[Mehr Einstellungen]]></Text>
+			<Text language="en"><![CDATA[More settings]]></Text>
+		</Translation>
+		<Translation name="CP_cc_lessSettings">
+			<Text language="de"><![CDATA[Weniger Einstellungen]]></Text>
+			<Text language="en"><![CDATA[Fewer settings]]></Text>
+		</Translation>
+		<Translation name="CP_cc_startAt">
+			<Text language="de"><![CDATA[Start bei]]></Text>
+			<Text language="en"><![CDATA[Start at]]></Text>
+		</Translation>
+		<Translation name="CP_cc_generating">
+			<Text language="de"><![CDATA[Feld wird gesucht und der Kurs erstellt...]]></Text>
+			<Text language="en"><![CDATA[Finding the field and making the course...]]></Text>
+		</Translation>
+		<Translation name="CP_cc_hint_noCourse">
+			<Text language="de"><![CDATA[Noch kein Kurs. %s erstellt einen für das Feld, auf dem du stehst.]]></Text>
+			<Text language="en"><![CDATA[No course yet. %s makes one for the field you are on.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_clear_ask">
+			<Text language="de"><![CDATA[Den Kurs von diesem Fahrzeug löschen?]]></Text>
+			<Text language="en"><![CDATA[Clear the course from this vehicle?]]></Text>
+		</Translation>
+		<Translation name="CP_cc_copied">
+			<Text language="de"><![CDATA[Kopiert: %s. Auf einem Fahrzeug ohne Kurs einfügen.]]></Text>
+			<Text language="en"><![CDATA[Copied: %s. Paste it on a vehicle without a course.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_record_start">
+			<Text language="de"><![CDATA[Kurs aufnehmen]]></Text>
+			<Text language="en"><![CDATA[Record course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_record_running">
+			<Text language="de"><![CDATA[Kurs wird aufgenommen: abfahren, Stopp speichert ihn.]]></Text>
+			<Text language="en"><![CDATA[Recording a course: drive it, Stop saves it.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_record_paused">
+			<Text language="de"><![CDATA[Aufnahme pausiert: Weiter nimmt weiter auf.]]></Text>
+			<Text language="en"><![CDATA[Recording paused: Resume goes on recording.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_record_hint">
+			<Text language="de"><![CDATA[CourseCorrect nimmt den gefahrenen Weg auf.]]></Text>
+			<Text language="en"><![CDATA[CourseCorrect records the way you drive.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_mini_noCourse">
+			<Text language="de"><![CDATA[Kein Kurs]]></Text>
+			<Text language="en"><![CDATA[No course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_start">
+			<Text language="de"><![CDATA[Start]]></Text>
+			<Text language="en"><![CDATA[Start]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_stop">
+			<Text language="de"><![CDATA[Stopp]]></Text>
+			<Text language="en"><![CDATA[Stop]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_stopHelper">
+			<Text language="de"><![CDATA[Helfer stoppen]]></Text>
+			<Text language="en"><![CDATA[Stop helper]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_newCourse">
+			<Text language="de"><![CDATA[Neuer Kurs]]></Text>
+			<Text language="en"><![CDATA[New course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_makeCourse">
+			<Text language="de"><![CDATA[Kurs erstellen]]></Text>
+			<Text language="en"><![CDATA[Make course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_clear">
+			<Text language="de"><![CDATA[Löschen]]></Text>
+			<Text language="en"><![CDATA[Clear]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_cancel">
+			<Text language="de"><![CDATA[Abbrechen]]></Text>
+			<Text language="en"><![CDATA[Cancel]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_reverse">
+			<Text language="de"><![CDATA[Umkehren]]></Text>
+			<Text language="en"><![CDATA[Reverse]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_copy">
+			<Text language="de"><![CDATA[Kopieren]]></Text>
+			<Text language="en"><![CDATA[Copy]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_forget">
+			<Text language="de"><![CDATA[Kopie verwerfen]]></Text>
+			<Text language="en"><![CDATA[Forget copy]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_paste">
+			<Text language="de"><![CDATA[%s einfügen]]></Text>
+			<Text language="en"><![CDATA[Paste %s]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_savedCourses">
+			<Text language="de"><![CDATA[Gespeicherte Kurse]]></Text>
+			<Text language="en"><![CDATA[Saved courses]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_positions">
+			<Text language="de"><![CDATA[Positionen auf Karte]]></Text>
+			<Text language="en"><![CDATA[Positions on map]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_pause">
+			<Text language="de"><![CDATA[Pause]]></Text>
+			<Text language="en"><![CDATA[Pause]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_resume">
+			<Text language="de"><![CDATA[Weiter]]></Text>
+			<Text language="en"><![CDATA[Resume]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_stopRecording">
+			<Text language="de"><![CDATA[Aufnahme beenden]]></Text>
+			<Text language="en"><![CDATA[Stop recording]]></Text>
+		</Translation>
+		<Translation name="CP_cc_info_bales">
+			<Text language="de"><![CDATA[Sammelt oder wickelt die Ballen auf diesem Feld, die nächsten zuerst.]]></Text>
+			<Text language="en"><![CDATA[Picks up or wraps the bales on this field, the nearest first.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_info_bunkerSilo">
+			<Text language="de"><![CDATA[Fährt das Fahrsilo Bahn für Bahn auf und ab, schiebt und verdichtet es.]]></Text>
+			<Text language="en"><![CDATA[Drives up and down the bunker silo lane by lane to push and compact it.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_info_siloLoader">
+			<Text language="de"><![CDATA[Lädt von einem Haufen oder Fahrsilo in Anhänger an der auf der Karte gesetzten Abladeposition.]]></Text>
+			<Text language="en"><![CDATA[Loads from a heap or a bunker silo into trailers at the unload position set on the map.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_info_unloader">
+			<Text language="de"><![CDATA[Überlädt Drescher auf dem Feld und bringt die Ladung zur auf der Karte gesetzten Abladeposition.]]></Text>
+			<Text language="en"><![CDATA[Unloads combines on the field and drives the load to the unload position set on the map.]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectOthers">
+		<Translation name="CP_cc_role_unloader">
+			<Text language="de"><![CDATA[Überlader]]></Text>
+			<Text language="en"><![CDATA[Unloader]]></Text>
+		</Translation>
+		<Translation name="CP_cc_role_autoDrive">
+			<Text language="de"><![CDATA[AutoDrive]]></Text>
+			<Text language="en"><![CDATA[AutoDrive]]></Text>
+		</Translation>
+		<Translation name="CP_cc_role_worker">
+			<Text language="de"><![CDATA[Feldarbeit]]></Text>
+			<Text language="en"><![CDATA[Field work]]></Text>
+		</Translation>
+		<Translation name="CP_cc_role_helper">
+			<Text language="de"><![CDATA[Helfer]]></Text>
+			<Text language="en"><![CDATA[Helper]]></Text>
+		</Translation>
+		<Translation name="CP_cc_others_more">
+			<Text language="de"><![CDATA[+%d weitere]]></Text>
+			<Text language="en"><![CDATA[+%d more]]></Text>
+		</Translation>
+		<Translation name="CP_cc_unloader_noField">
+			<Text language="de"><![CDATA[Sein Feld erscheint hier, sobald es auf der Karte gesetzt und gefunden ist.]]></Text>
+			<Text language="en"><![CDATA[Its field shows here once the field is set on the map and found.]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectHeadlands">
+		<Translation name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_title">
+			<Text language="de"><![CDATA[Automatische Vorgewende]]></Text>
+			<Text language="en"><![CDATA[Automatic headlands]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_tooltip">
+			<Text language="de"><![CDATA[Automatisch: so viele Vorgewende, wie mit der Arbeitsbreite die Vorgewendebreite ergeben.]]></Text>
+			<Text language="en"><![CDATA[Automatic: as many headlands as make up the headland width with the work width.]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_manual">
+			<Text language="de"><![CDATA[manuell]]></Text>
+			<Text language="en"><![CDATA[manual]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_automatic">
+			<Text language="de"><![CDATA[automatisch]]></Text>
+			<Text language="en"><![CDATA[automatic]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_courseGeneratorSetting_headlandWidth_title">
+			<Text language="de"><![CDATA[Vorgewendebreite]]></Text>
+			<Text language="en"><![CDATA[Headland width]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_courseGeneratorSetting_headlandWidth_tooltip">
+			<Text language="de"><![CDATA[Bei automatischen Vorgewenden: wie breit alle Vorgewende zusammen mindestens sind.]]></Text>
+			<Text language="en"><![CDATA[With automatic headlands: how wide all headlands together are at least.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_headlands">
+			<Text language="de"><![CDATA[Vorgewende]]></Text>
+			<Text language="en"><![CDATA[Headlands]]></Text>
+		</Translation>
+		<Translation name="CP_cc_headlands_auto">
+			<Text language="de"><![CDATA[auto · %d m (%d)]]></Text>
+			<Text language="en"><![CDATA[auto · %d m (%d)]]></Text>
+		</Translation>
+		<Translation name="CP_cc_headlands_setNumber">
+			<Text language="de"><![CDATA[Anzahl festlegen]]></Text>
+			<Text language="en"><![CDATA[Set the number]]></Text>
+		</Translation>
+		<Translation name="CP_cc_headlands_automatic">
+			<Text language="de"><![CDATA[Automatisch (nach Breite)]]></Text>
+			<Text language="en"><![CDATA[Automatic (by width)]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectGoTo">
+		<Translation name="CP_cc_status_autoDrive">
+			<Text language="de"><![CDATA[AutoDrive]]></Text>
+			<Text language="en"><![CDATA[AutoDrive]]></Text>
+		</Translation>
+		<Translation name="CP_cc_status_autoDriveTo">
+			<Text language="de"><![CDATA[AutoDrive · %s]]></Text>
+			<Text language="en"><![CDATA[AutoDrive · %s]]></Text>
+		</Translation>
+		<Translation name="CP_cc_btn_stopAutoDrive">
+			<Text language="de"><![CDATA[AutoDrive stoppen]]></Text>
+			<Text language="en"><![CDATA[Stop AutoDrive]]></Text>
+		</Translation>
+		<Translation name="CP_cc_go_sent">
+			<Text language="de"><![CDATA[AutoDrive fährt es zu %s, CourseCorrect startet dort den Kurs.]]></Text>
+			<Text language="en"><![CDATA[AutoDrive takes it to %s, CourseCorrect starts the course there.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_go_noMarker">
+			<Text language="de"><![CDATA[Kein AutoDrive-Ziel nahe diesem Feld: CourseCorrect startet von hier.]]></Text>
+			<Text language="en"><![CDATA[No AutoDrive marker near this field: CourseCorrect starts from here.]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectHints">
+		<Translation name="CP_cc_hint_noFieldwork">
+			<Text language="de"><![CDATA[Kein Feldgerät angehängt: Feldarbeit und Kurse (neu, gespeichert) erscheinen hier, sobald eins angehängt ist.]]></Text>
+			<Text language="en"><![CDATA[No field implement attached: field work and courses (new, saved) show here once one is.]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectSaved">
+		<Translation name="CP_cc_saved_save">
+			<Text language="de"><![CDATA[Diesen Kurs speichern]]></Text>
+			<Text language="en"><![CDATA[Save this course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_saveTitle">
+			<Text language="de"><![CDATA[Name des Kurses]]></Text>
+			<Text language="en"><![CDATA[Name of the course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_saved">
+			<Text language="de"><![CDATA[Gespeichert: %s]]></Text>
+			<Text language="en"><![CDATA[Saved: %s]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_saveFailed">
+			<Text language="de"><![CDATA[%s konnte nicht gespeichert werden.]]></Text>
+			<Text language="en"><![CDATA[Could not save %s.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_exists">
+			<Text language="de"><![CDATA[%s gibt es schon.]]></Text>
+			<Text language="en"><![CDATA[%s already exists.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_allFolders">
+			<Text language="de"><![CDATA[< Alle Ordner]]></Text>
+			<Text language="en"><![CDATA[< All folders]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_newFolder">
+			<Text language="de"><![CDATA[Neuer Ordner]]></Text>
+			<Text language="en"><![CDATA[New folder]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_count">
+			<Text language="de"><![CDATA[%d Einträge]]></Text>
+			<Text language="en"><![CDATA[%d entries]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_empty">
+			<Text language="de"><![CDATA[Hier ist noch nichts gespeichert.]]></Text>
+			<Text language="en"><![CDATA[Nothing saved here yet.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_open">
+			<Text language="de"><![CDATA[Öffnen]]></Text>
+			<Text language="en"><![CDATA[Open]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_load">
+			<Text language="de"><![CDATA[Laden]]></Text>
+			<Text language="en"><![CDATA[Load]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_go">
+			<Text language="de"><![CDATA[Los]]></Text>
+			<Text language="en"><![CDATA[Go]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_rename">
+			<Text language="de"><![CDATA[Umbenennen]]></Text>
+			<Text language="en"><![CDATA[Rename]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_delete">
+			<Text language="de"><![CDATA[Löschen]]></Text>
+			<Text language="en"><![CDATA[Delete]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_deleteAsk">
+			<Text language="de"><![CDATA[%s löschen?]]></Text>
+			<Text language="en"><![CDATA[Delete %s?]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_deleted">
+			<Text language="de"><![CDATA[Gelöscht: %s]]></Text>
+			<Text language="en"><![CDATA[Deleted: %s]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_deleteFailed">
+			<Text language="de"><![CDATA[%s konnte nicht gelöscht werden.]]></Text>
+			<Text language="en"><![CDATA[Could not delete %s.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_folderNotEmpty">
+			<Text language="de"><![CDATA[%s ist nicht leer.]]></Text>
+			<Text language="en"><![CDATA[%s is not empty.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_loaded">
+			<Text language="de"><![CDATA[Geladen: %s]]></Text>
+			<Text language="en"><![CDATA[Loaded: %s]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_loadFailed">
+			<Text language="de"><![CDATA[%s konnte nicht geladen werden.]]></Text>
+			<Text language="en"><![CDATA[Could not load %s.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_goNeedsImplement">
+			<Text language="de"><![CDATA[Los (laden, mit AutoDrive hinfahren und starten) braucht ein angehängtes Feldgerät.]]></Text>
+			<Text language="en"><![CDATA[Go (load, drive there with AutoDrive and start) needs a field implement attached.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_openManager">
+			<Text language="de"><![CDATA[Volle Kursverwaltung (verschieben, kopieren, Editor)]]></Text>
+			<Text language="en"><![CDATA[Full course manager (move, copy, editor)]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectSavedCounts">
+		<Translation name="CP_cc_saved_courseCount">
+			<Text language="de"><![CDATA[Kurse: %d]]></Text>
+			<Text language="en"><![CDATA[Courses: %d]]></Text>
+		</Translation>
+		<Translation name="CP_cc_saved_entryCount">
+			<Text language="de"><![CDATA[Einträge: %d]]></Text>
+			<Text language="en"><![CDATA[Entries: %d]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectSettings">
+		<Translation name="CP_cc_settings_vehicle">
+			<Text language="de"><![CDATA[Fahrzeug]]></Text>
+			<Text language="en"><![CDATA[Vehicle]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settings_generator">
+			<Text language="de"><![CDATA[Kursgenerator]]></Text>
+			<Text language="en"><![CDATA[Course generator]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settings_global">
+			<Text language="de"><![CDATA[Global]]></Text>
+			<Text language="en"><![CDATA[Global]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settings_fields">
+			<Text language="de"><![CDATA[Felder]]></Text>
+			<Text language="en"><![CDATA[Fields]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settings_vines">
+			<Text language="de"><![CDATA[Reben]]></Text>
+			<Text language="en"><![CDATA[Vines]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settings_none">
+			<Text language="de"><![CDATA[Hier gibt es keine Einstellungen für dieses Fahrzeug.]]></Text>
+			<Text language="en"><![CDATA[No settings here for this vehicle.]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settings_help">
+			<Text language="de"><![CDATA[CourseCorrect-Hilfe]]></Text>
+			<Text language="en"><![CDATA[CourseCorrect help]]></Text>
+		</Translation>
+		<Translation name="CP_cc_settings_menu">
+			<Text language="de"><![CDATA[Volles Einstellungsmenü]]></Text>
+			<Text language="en"><![CDATA[Full settings menu]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectStartAt">
+		<Translation name="CP_cc_start_nearest">
+			<Text language="de"><![CDATA[Nächster]]></Text>
+			<Text language="en"><![CDATA[Nearest]]></Text>
+		</Translation>
+		<Translation name="CP_cc_start_first">
+			<Text language="de"><![CDATA[Erster]]></Text>
+			<Text language="en"><![CDATA[First]]></Text>
+		</Translation>
+		<Translation name="CP_cc_start_last">
+			<Text language="de"><![CDATA[Letzter]]></Text>
+			<Text language="en"><![CDATA[Last]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectKeys">
+		<Translation name="CP_cc_key_prevTab">
+			<Text language="de"><![CDATA[CourseCorrect: vorheriger Reiter]]></Text>
+			<Text language="en"><![CDATA[CourseCorrect: previous tab]]></Text>
+		</Translation>
+		<Translation name="CP_cc_key_nextTab">
+			<Text language="de"><![CDATA[CourseCorrect: nächster Reiter]]></Text>
+			<Text language="en"><![CDATA[CourseCorrect: next tab]]></Text>
+		</Translation>
+		<Translation name="CP_cc_key_back">
+			<Text language="de"><![CDATA[CourseCorrect: zurück zum Fahren]]></Text>
+			<Text language="en"><![CDATA[CourseCorrect: back to driving]]></Text>
+		</Translation>
+		<Translation name="CP_cc_key_select">
+			<Text language="de"><![CDATA[Auswählen]]></Text>
+			<Text language="en"><![CDATA[Select]]></Text>
+		</Translation>
+		<Translation name="CP_cc_key_change">
+			<Text language="de"><![CDATA[Ändern]]></Text>
+			<Text language="en"><![CDATA[Change]]></Text>
+		</Translation>
+		<Translation name="CP_cc_key_list">
+			<Text language="de"><![CDATA[Werteliste]]></Text>
+			<Text language="en"><![CDATA[List of values]]></Text>
+		</Translation>
+		<Translation name="CP_cc_key_pick">
+			<Text language="de"><![CDATA[Übernehmen]]></Text>
+			<Text language="en"><![CDATA[Pick]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectOnArrival">
+		<Translation name="CP_cc_onArrival">
+			<Text language="de"><![CDATA[Bei Ankunft]]></Text>
+			<Text language="en"><![CDATA[On arrival]]></Text>
+		</Translation>
+		<Translation name="CP_cc_onArrival_start">
+			<Text language="de"><![CDATA[Starten]]></Text>
+			<Text language="en"><![CDATA[Start]]></Text>
+		</Translation>
+		<Translation name="CP_cc_onArrival_stay">
+			<Text language="de"><![CDATA[Warten]]></Text>
+			<Text language="en"><![CDATA[Stay]]></Text>
+		</Translation>
+		<Translation name="CP_cc_go_sentStay">
+			<Text language="de"><![CDATA[AutoDrive fährt es zu %s.]]></Text>
+			<Text language="en"><![CDATA[AutoDrive takes it to %s.]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectMap">
+		<Translation name="CP_cc_map_hide">
+			<Text language="de"><![CDATA[Karte ausblenden]]></Text>
+			<Text language="en"><![CDATA[Hide map]]></Text>
+		</Translation>
+		<Translation name="CP_cc_map_show">
+			<Text language="de"><![CDATA[Karte zeigen]]></Text>
+			<Text language="en"><![CDATA[Show map]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_course">
+			<Text language="de"><![CDATA[Kurs]]></Text>
+			<Text language="en"><![CDATA[Course]]></Text>
+		</Translation>
+		<Translation name="CP_cc_detail_waypoint">
+			<Text language="de"><![CDATA[Wegpunkt]]></Text>
+			<Text language="en"><![CDATA[Waypoint]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectLines">
+		<Translation name="CP_cc_lines">
+			<Text language="de"><![CDATA[Kurslinien]]></Text>
+			<Text language="en"><![CDATA[Course lines]]></Text>
+		</Translation>
+		<Translation name="CP_cc_lines_off">
+			<Text language="de"><![CDATA[Aus]]></Text>
+			<Text language="en"><![CDATA[Off]]></Text>
+		</Translation>
+		<Translation name="CP_cc_lines_startStop">
+			<Text language="de"><![CDATA[Enden]]></Text>
+			<Text language="en"><![CDATA[Ends]]></Text>
+		</Translation>
+		<Translation name="CP_cc_lines_near">
+			<Text language="de"><![CDATA[Nah]]></Text>
+			<Text language="en"><![CDATA[Near]]></Text>
+		</Translation>
+		<Translation name="CP_cc_lines_all">
+			<Text language="de"><![CDATA[Alle]]></Text>
+			<Text language="en"><![CDATA[All]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectImplements">
+		<Translation name="CP_vehicle_setting_keepImplementsRunning_title">
+			<Text language="de"><![CDATA[Beim Ausheben]]></Text>
+			<Text language="en"><![CDATA[When lifted]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_setting_keepImplementsRunning_tooltip">
+			<Text language="de"><![CDATA[In Wendemanövern werden die Geräte ausgehoben. Ausschalten: das Spiel schaltet sie auch aus. Weiterlaufen: was lief, bleibt an, bis es wieder abgesenkt wird, ohne Aus- und Hochlaufen (Mähwerke, Feldhäcksler, Wender).]]></Text>
+			<Text language="en"><![CDATA[In turns the implements are lifted. Switch off: the game switches them off too. Keep running: what was running stays on until it is lowered again, no spinning down and up (mowers, forage harvesters, tedders).]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_setting_keepImplementsRunning_switchOff">
+			<Text language="de"><![CDATA[ausschalten]]></Text>
+			<Text language="en"><![CDATA[switch off]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_setting_keepImplementsRunning_keepRunning">
+			<Text language="de"><![CDATA[weiterlaufen]]></Text>
+			<Text language="en"><![CDATA[keep running]]></Text>
+		</Translation>
+	</Category>
+	<Category name="CourseCorrectRowOverlap">
+		<Translation name="CP_vehicle_courseGeneratorSetting_rowOverlapPercent_title">
+			<Text language="de"><![CDATA[Überlappung Spuren]]></Text>
+			<Text language="en"><![CDATA[Row overlap]]></Text>
+		</Translation>
+		<Translation name="CP_vehicle_courseGeneratorSetting_rowOverlapPercent_tooltip">
+			<Text language="de"><![CDATA[Benachbarte Spuren in der Feldmitte überlappen um so viel der Arbeitsbreite, damit leichtes Abdriften keine unbearbeiteten Streifen dazwischen lässt (breite oder gezogene Geräte, Hänge). 0 %: Spuren genau eine Arbeitsbreite auseinander. Vorgewendebahnen haben ihre eigene Überlappung. Danach einen neuen Kurs erstellen.]]></Text>
+			<Text language="en"><![CDATA[Neighbouring rows in the middle of the field overlap by this much of the work width, so a little drift leaves no unworked strips between them (wide or towed implements, slopes). 0 %: rows exactly one work width apart. Headland passes have their own overlap. Make a new course after changing it.]]></Text>
+		</Translation>
+	</Category>
 </Translations>

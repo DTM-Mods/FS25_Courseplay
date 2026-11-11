@@ -403,8 +403,20 @@ end
 function CpCourseManager:appendLoadedCpCourse(file)
     --- For now clear the previous courses.
     CpCourseManager.resetCourses(self)
-    return file:load(CpCourseManager.xmlSchema, CpCourseManager.xmlKeyFileManager, 
+    local ok = file:load(CpCourseManager.xmlSchema, CpCourseManager.xmlKeyFileManager, 
         CpCourseManager.loadAssignedCourses, self, false)
+    if ok then
+        CpCourseManager.startNewCourseAtFirstWaypoint(self)
+    end
+    return ok
+end
+
+--- CourseCorrect: a freshly loaded or generated course starts at its first waypoint, not the nearest one.
+function CpCourseManager.startNewCourseAtFirstWaypoint(vehicle)
+    local setting = vehicle.getCpStartingPointSetting and vehicle:getCpStartingPointSetting()
+    if setting and CpFieldWorkJobParameters.START_AT_FIRST_POINT then
+        setting:setValue(CpFieldWorkJobParameters.START_AT_FIRST_POINT)
+    end
 end
 
 function CpCourseManager:saveCourses(file,text)

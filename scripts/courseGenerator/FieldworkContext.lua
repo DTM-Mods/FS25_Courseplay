@@ -14,6 +14,7 @@ function FieldworkContext:init(field, workingWidth, turningRadius, nHeadlands)
     self.startLocation = Vector(0, 0)
     self.workingWidth = workingWidth
     self.overlap = CourseGenerator.cDefaultHeadlandOverlapPercentage / 100
+    self.rowOverlap = 0
     self.turningRadius = turningRadius
 
     self.fieldMargin = 0
@@ -52,8 +53,9 @@ function FieldworkContext:log()
             self.fieldCornerRadius, self.sharpenCorners, self.bypassIslands, self.nIslandHeadlands, self.islandHeadlandClockwise)
     self.logger:debug('row pattern: %s, row angle auto: %s, %.1fº, even row distribution: %s, use baseline edge: %s, small overlaps: %s',
             self.rowPattern, self.autoRowAngle, math.deg(self.rowAngle), self.evenRowDistribution, self.useBaselineEdge, self.enableSmallOverlapsWithHeadland)
-    self.logger:debug('start location %s, baseline edge %s, vehicles %d, same turn width %s, headland overlap %.1f',
-            self.startLocation, self.baselineEdge, self.nVehicles, self.useSameTurnWidth, self.overlap * 100)
+    self.logger:debug('start location %s, baseline edge %s, vehicles %d, same turn width %s, headland overlap %.1f, row overlap %.1f',
+            self.startLocation, self.baselineEdge, self.nVehicles, self.useSameTurnWidth, self.overlap * 100,
+            self.rowOverlap * 100)
 end
 
 function FieldworkContext:addError(logger, ...)
@@ -284,9 +286,16 @@ function FieldworkContext:setCenterRowSpacing(w)
     return self
 end
 
----@return number distance between two adjacent up/down rows.
+---@param overlapPercentage number neighbouring up/down rows in the center overlap by this percentage of their width,
+--- so a little drift (towed or very wide implements, slopes) leaves no unworked strips between them (CourseCorrect)
+function FieldworkContext:setRowOverlap(overlapPercentage)
+    self.rowOverlap = math.max(0, math.min(50, overlapPercentage or 0)) / 100
+    return self
+end
+
+---@return number distance between two adjacent up/down rows (the row overlap taken off).
 function FieldworkContext:getCenterRowSpacing()
-    return self.centerRowSpacing or self.workingWidth
+    return (self.centerRowSpacing or self.workingWidth) * (1 - (self.rowOverlap or 0))
 end
 
 ---@see Row.adjustLength()

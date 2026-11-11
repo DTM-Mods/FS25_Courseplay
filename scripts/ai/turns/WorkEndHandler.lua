@@ -48,7 +48,13 @@ function WorkEndHandler:raiseImplementsAsNeeded(workEndNode)
             self.nObjectsAlreadyRaised = self.nObjectsAlreadyRaised + 1
             self.logger:debug(self.vehicle, 'Raising implement %s, %d left', CpUtil.getName(object),
                     self.nObjectsToRaise - self.nObjectsAlreadyRaised)
+            -- CourseCorrect, When lifted: Keep running: the game switches it off as it lifts it, on again at once
+            local keepRunning = self.keepRunning and object.getIsTurnedOn and object.setIsTurnedOn
+                    and object:getIsTurnedOn()
             object:aiImplementEndLine()
+            if keepRunning then
+                self.driveStrategy:keepImplementRunning(object)
+            end
             if self:oneRaised() then
                 self.driveStrategy:raiseControllerEvent(AIDriveStrategyCourse.onRaisingEvent)
             end

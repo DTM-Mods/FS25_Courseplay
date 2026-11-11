@@ -283,9 +283,19 @@ function CpHud:getCpStatus()
     return spec.status
 end
 
+--- The hud of the style selected in the global settings: the CourseCorrect panel or the classic hud.
+function CpHud.createHud(vehicle)
+    local spec = vehicle.spec_cpHud
+    spec.hudStyle = g_Courseplay.globalSettings.hudStyle:getValue()
+    if spec.hudStyle == g_Courseplay.globalSettings.HUD_STYLE_CLASSIC then
+        return CpBaseHud(vehicle)
+    end
+    return CpModernHud(vehicle)
+end
+
 function CpHud:onPostLoad(savegame)
     local spec = self.spec_cpHud
-    spec.hud = CpBaseHud(self)
+    spec.hud = CpHud.createHud(self)
 end
 
 function CpHud:saveToXMLFile(xmlFile, baseKey, usedModNames)
@@ -355,6 +365,13 @@ function CpHud:onDrawUIInfo()
         return
     end
     local spec = self.spec_cpHud
+    --- The hud style was changed in the global settings.
+    if spec.hudStyle ~= g_Courseplay.globalSettings.hudStyle:getValue() then
+        local wasOpen = spec.hud:getIsOpen()
+        spec.hud:delete()
+        spec.hud = CpHud.createHud(self)
+        spec.hud:openClose(wasOpen)
+    end
 
     spec.hud:draw(spec.status)
     if spec.hud:getIsOpen() then 
@@ -410,7 +427,7 @@ function CpHud:cpUpdateMouseAction()
 end
 
 function CpHud:cpInit()
-    self.spec_cpHud.hud = CpBaseHud(self)
+    self.spec_cpHud.hud = CpHud.createHud(self)
 end
 
 --------------------------------------

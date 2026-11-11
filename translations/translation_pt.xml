@@ -1057,5 +1057,168 @@ Now your selection should look similar to the image.
     <text name="input_CP_OPEN_COURSEGENERATOR_SETTINGS" text="CP: Abre Menu do Gerador Rotas"/>
     <text name="input_CP_OPEN_COURSEMANAGER" text="CP: Abre Gerador de Rotas"/>
     <text name="input_CP_OPEN_INGAME_MENU" text="CP: Open menu"/>
+    <text name="CP_global_setting_hudStyle_title" text="HUD style"/>
+    <text name="CP_global_setting_hudStyle_tooltip" text="CourseCorrect: the new panel with the course map. Classic: the old HUD."/>
+    <text name="CP_global_setting_hudStyle_classic" text="Classic"/>
+    <text name="CP_global_setting_hudStyle_modern" text="CourseCorrect"/>
+    <text name="CP_cc_tab_course" text="Course"/>
+    <text name="CP_cc_tab_saved" text="Saved"/>
+    <text name="CP_cc_tab_settings" text="Settings"/>
+    <text name="CP_cc_job_fieldWork" text="Field work"/>
+    <text name="CP_cc_job_bales" text="Bales"/>
+    <text name="CP_cc_job_bunkerSilo" text="Silo"/>
+    <text name="CP_cc_job_siloLoader" text="Loader"/>
+    <text name="CP_cc_job_unloader" text="Unloader"/>
+    <text name="CP_cc_status_working" text="Working · %d%%"/>
+    <text name="CP_cc_status_active" text="Working"/>
+    <text name="CP_cc_status_ready" text="Ready"/>
+    <text name="CP_cc_status_noCourse" text="No course"/>
+    <text name="CP_cc_status_notReady" text="Can't start"/>
+    <text name="CP_cc_status_otherHelper" text="Other helper active"/>
+    <text name="CP_cc_status_recording" text="Recording"/>
+    <text name="CP_cc_status_recordingPaused" text="Recording paused"/>
+    <text name="CP_cc_progress_left" text="%s left"/>
+    <text name="CP_cc_summary" text="%.1f ha · %d headlands · %d rows · %.1f km"/>
+    <text name="CP_cc_summaryNoField" text="%d headlands · %d rows · %.1f km"/>
+    <text name="CP_cc_detail_area" text="Area"/>
+    <text name="CP_cc_detail_length" text="Length"/>
+    <text name="CP_cc_detail_working" text="Working"/>
+    <text name="CP_cc_detail_headlands" text="Headlands"/>
+    <text name="CP_cc_detail_rows" text="Rows"/>
+    <text name="CP_cc_detail_turns" text="Turns"/>
+    <text name="CP_cc_detail_waypoints" text="Waypoints"/>
+    <text name="CP_cc_detail_workWidth" text="Work width"/>
+    <text name="CP_cc_detail_multiTools" text="Vehicles"/>
+    <text name="CP_cc_detail_timeLeft" text="Time left"/>
+    <text name="CP_cc_settingsChanged" text="Settings changed: New course makes the course with them"/>
+    <text name="CP_cc_moreSettings" text="More settings"/>
+    <text name="CP_cc_lessSettings" text="Fewer settings"/>
+    <text name="CP_cc_startAt" text="Start at"/>
+    <text name="CP_cc_generating" text="Finding the field and making the course..."/>
+    <text name="CP_cc_hint_noCourse" text="No course yet. %s makes one for the field you are on."/>
+    <text name="CP_cc_clear_ask" text="Clear the course from this vehicle?"/>
+    <text name="CP_cc_copied" text="Copied: %s. Paste it on a vehicle without a course."/>
+    <text name="CP_cc_record_start" text="Record course"/>
+    <text name="CP_cc_record_running" text="Recording a course: drive it, Stop saves it."/>
+    <text name="CP_cc_record_paused" text="Recording paused: Resume goes on recording."/>
+    <text name="CP_cc_record_hint" text="CourseCorrect records the way you drive."/>
+    <text name="CP_cc_mini_noCourse" text="No course"/>
+    <text name="CP_cc_btn_start" text="Start"/>
+    <text name="CP_cc_btn_stop" text="Stop"/>
+    <text name="CP_cc_btn_stopHelper" text="Stop helper"/>
+    <text name="CP_cc_btn_newCourse" text="New course"/>
+    <text name="CP_cc_btn_makeCourse" text="Make course"/>
+    <text name="CP_cc_btn_clear" text="Clear"/>
+    <text name="CP_cc_btn_cancel" text="Cancel"/>
+    <text name="CP_cc_btn_reverse" text="Reverse"/>
+    <text name="CP_cc_btn_copy" text="Copy"/>
+    <text name="CP_cc_btn_forget" text="Forget copy"/>
+    <text name="CP_cc_btn_paste" text="Paste %s"/>
+    <text name="CP_cc_btn_savedCourses" text="Saved courses"/>
+    <text name="CP_cc_btn_positions" text="Positions on map"/>
+    <text name="CP_cc_btn_pause" text="Pause"/>
+    <text name="CP_cc_btn_resume" text="Resume"/>
+    <text name="CP_cc_btn_stopRecording" text="Stop recording"/>
+    <text name="CP_cc_info_bales" text="Picks up or wraps the bales on this field, the nearest first."/>
+    <text name="CP_cc_info_bunkerSilo" text="Drives up and down the bunker silo lane by lane to push and compact it."/>
+    <text name="CP_cc_info_siloLoader" text="Loads from a heap or a bunker silo into trailers at the unload position set on the map."/>
+    <text name="CP_cc_info_unloader" text="Unloads combines on the field and drives the load to the unload position set on the map."/>
+    <text name="CP_cc_role_unloader" text="Unloader"/>
+    <text name="CP_cc_role_autoDrive" text="AutoDrive"/>
+    <text name="CP_cc_role_worker" text="Field work"/>
+    <text name="CP_cc_role_helper" text="Helper"/>
+    <text name="CP_cc_others_more" text="+%d more"/>
+    <text name="CP_cc_unloader_noField" text="Its field shows here once the field is set on the map, or when it stands at a field a Courseplay combine is working."/>
+    <text name="CP_cc_tab_fleet" text="Fleet"/>
+    <text name="CP_cc_fleet_empty" text="No Courseplay or AutoDrive vehicle on the farm."/>
+    <text name="CP_cc_fleet_idle" text="Idle"/>
+    <text name="CP_cc_fleet_you" text="(you)"/>
+    <text name="CP_cc_fleet_count" text="%d of %d working"/>
+    <text name="CP_cc_btn_goToCombine" text="Go to combine"/>
+    <text name="CP_cc_go_unloaderSent" text="AutoDrive takes it to %s, it unloads the combine from there."/>
+    <text name="CP_cc_btn_callTruck" text="Call truck"/>
+    <text name="CP_cc_call_ask" text="Which truck should come?"/>
+    <text name="CP_cc_call_none" text="No free truck with a trailer on the farm."/>
+    <text name="CP_cc_call_started" text="%s unloads here now."/>
+    <text name="CP_cc_call_sent" text="AutoDrive brings %s to %s, it unloads the combine from there."/>
+    <text name="CP_cc_call_noWay" text="%s has no AutoDrive marker near this field, drive it here first."/>
+    <text name="CP_cc_call_failed" text="%s could not start."/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_title" text="Automatic headlands"/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_tooltip" text="Automatic: as many headlands as make up the headland width with the work width."/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_manual" text="manual"/>
+    <text name="CP_vehicle_courseGeneratorSetting_automaticHeadlands_automatic" text="automatic"/>
+    <text name="CP_vehicle_courseGeneratorSetting_headlandWidth_title" text="Headland width"/>
+    <text name="CP_vehicle_courseGeneratorSetting_headlandWidth_tooltip" text="With automatic headlands: how wide all headlands together are at least."/>
+    <text name="CP_cc_headlands" text="Headlands"/>
+    <text name="CP_cc_headlands_auto" text="auto · %d m (%d)"/>
+    <text name="CP_cc_headlands_setNumber" text="Set the number"/>
+    <text name="CP_cc_headlands_automatic" text="Automatic (by width)"/>
+    <text name="CP_cc_status_autoDrive" text="AutoDrive"/>
+    <text name="CP_cc_status_autoDriveTo" text="AutoDrive · %s"/>
+    <text name="CP_cc_btn_stopAutoDrive" text="Stop AutoDrive"/>
+    <text name="CP_cc_go_sent" text="AutoDrive takes it to %s, CourseCorrect starts the course there."/>
+    <text name="CP_cc_go_noMarker" text="No AutoDrive marker near this field: CourseCorrect starts from here."/>
+    <text name="CP_cc_hint_noFieldwork" text="No field implement attached: field work and courses (new, saved) show here once one is."/>
+    <text name="CP_cc_saved_save" text="Save this course"/>
+    <text name="CP_cc_saved_saveTitle" text="Name of the course"/>
+    <text name="CP_cc_saved_saved" text="Saved: %s"/>
+    <text name="CP_cc_saved_saveFailed" text="Could not save %s."/>
+    <text name="CP_cc_saved_exists" text="%s already exists."/>
+    <text name="CP_cc_saved_allFolders" text="&lt; All folders"/>
+    <text name="CP_cc_saved_newFolder" text="New folder"/>
+    <text name="CP_cc_saved_count" text="%d entries"/>
+    <text name="CP_cc_saved_empty" text="Nothing saved here yet."/>
+    <text name="CP_cc_saved_open" text="Open"/>
+    <text name="CP_cc_saved_load" text="Load"/>
+    <text name="CP_cc_saved_go" text="Go"/>
+    <text name="CP_cc_saved_rename" text="Rename"/>
+    <text name="CP_cc_saved_delete" text="Delete"/>
+    <text name="CP_cc_saved_deleteAsk" text="Delete %s?"/>
+    <text name="CP_cc_saved_deleted" text="Deleted: %s"/>
+    <text name="CP_cc_saved_deleteFailed" text="Could not delete %s."/>
+    <text name="CP_cc_saved_folderNotEmpty" text="%s is not empty."/>
+    <text name="CP_cc_saved_loaded" text="Loaded: %s"/>
+    <text name="CP_cc_saved_loadFailed" text="Could not load %s."/>
+    <text name="CP_cc_saved_goNeedsImplement" text="Go (load, drive there with AutoDrive and start) needs a field implement attached."/>
+    <text name="CP_cc_saved_openManager" text="Full course manager (move, copy, editor)"/>
+    <text name="CP_cc_saved_courseCount" text="Courses: %d"/>
+    <text name="CP_cc_saved_entryCount" text="Entries: %d"/>
+    <text name="CP_cc_settings_vehicle" text="Vehicle"/>
+    <text name="CP_cc_settings_generator" text="Course generator"/>
+    <text name="CP_cc_settings_global" text="Global"/>
+    <text name="CP_cc_settings_fields" text="Fields"/>
+    <text name="CP_cc_settings_vines" text="Vines"/>
+    <text name="CP_cc_settings_none" text="No settings here for this vehicle."/>
+    <text name="CP_cc_settings_help" text="CourseCorrect help"/>
+    <text name="CP_cc_settings_menu" text="Full settings menu"/>
+    <text name="CP_cc_start_nearest" text="Nearest"/>
+    <text name="CP_cc_start_first" text="First"/>
+    <text name="CP_cc_start_last" text="Last"/>
+    <text name="CP_cc_key_prevTab" text="CourseCorrect: previous tab"/>
+    <text name="CP_cc_key_nextTab" text="CourseCorrect: next tab"/>
+    <text name="CP_cc_key_back" text="CourseCorrect: back to driving"/>
+    <text name="CP_cc_key_select" text="Select"/>
+    <text name="CP_cc_key_change" text="Change"/>
+    <text name="CP_cc_key_list" text="List of values"/>
+    <text name="CP_cc_key_pick" text="Pick"/>
+    <text name="CP_cc_onArrival" text="On arrival"/>
+    <text name="CP_cc_onArrival_start" text="Start"/>
+    <text name="CP_cc_onArrival_stay" text="Stay"/>
+    <text name="CP_cc_go_sentStay" text="AutoDrive takes it to %s."/>
+    <text name="CP_cc_map_hide" text="Hide map"/>
+    <text name="CP_cc_map_show" text="Show map"/>
+    <text name="CP_cc_detail_course" text="Course"/>
+    <text name="CP_cc_detail_waypoint" text="Waypoint"/>
+    <text name="CP_cc_lines" text="Course lines"/>
+    <text name="CP_cc_lines_off" text="Off"/>
+    <text name="CP_cc_lines_startStop" text="Ends"/>
+    <text name="CP_cc_lines_near" text="Near"/>
+    <text name="CP_cc_lines_all" text="All"/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_title" text="When lifted"/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_tooltip" text="In turns the implements are lifted. Switch off: the game switches them off too. Keep running: what was running stays on until it is lowered again, no spinning down and up (mowers, forage harvesters, tedders)."/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_switchOff" text="switch off"/>
+    <text name="CP_vehicle_setting_keepImplementsRunning_keepRunning" text="keep running"/>
+    <text name="CP_vehicle_courseGeneratorSetting_rowOverlapPercent_title" text="Row overlap"/>
+    <text name="CP_vehicle_courseGeneratorSetting_rowOverlapPercent_tooltip" text="Neighbouring rows in the middle of the field overlap by this much of the work width, so a little drift leaves no unworked strips between them (wide or towed implements, slopes). 0 %: rows exactly one work width apart. Headland passes have their own overlap. Make a new course after changing it."/>
   </texts>
 </l10n>

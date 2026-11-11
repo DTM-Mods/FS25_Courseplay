@@ -78,6 +78,7 @@ function CourseGeneratorInterface:generate(fieldPolygon,
                                            settings,
                                            islandPolygons
 )
+    CpCourseGeneratorSettings.applyAutomaticHeadlands(vehicle)
     CourseGenerator.clearDebugObjects()
     local field = CourseGenerator.Field('', 0, CpMathUtil.pointsFromGame(fieldPolygon))
 
@@ -105,6 +106,9 @@ function CourseGeneratorInterface:generate(fieldPolygon,
     context:setHeadlandFirst(settings.startOnHeadland:getValue())
     context:setHeadlandClockwise(settings.headlandClockwise:getValue())
     context:setHeadlandOverlap(settings.headlandOverlapPercent:getValue())
+    if settings.rowOverlapPercent then
+        context:setRowOverlap(settings.rowOverlapPercent:getValue())
+    end
     context:setSharpenCorners(settings.sharpenCorners:getValue())
     context:setHeadlandsWithRoundCorners(settings.headlandsWithRoundCorners:getValue())
     context:setAutoRowAngle(settings.autoRowAngle:getValue())
@@ -251,6 +255,7 @@ function CourseGeneratorInterface:setCourse(vehicle, course)
         course:setPosition(vehicle:getCpLaneOffsetSetting():getValue())
     end
     vehicle:setFieldWorkCourse(course)
+    CpCourseManager.startNewCourseAtFirstWaypoint(vehicle)
 end
 
 --- Generate a course for the vehicle, with start position at the vehicle's position

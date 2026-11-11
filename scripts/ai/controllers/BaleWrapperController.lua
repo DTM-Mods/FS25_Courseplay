@@ -51,15 +51,29 @@ function BaleWrapperController:isWorking()
     return self.baleWrapper.spec_baleWrapper.baleWrapperState ~= BaleWrapper.STATE_NONE
 end
 
+--- FS25 only stores the network id of the last dropped bale (lastDroppedBaleId), not the bale itself.
 function BaleWrapperController:getLastDroppedBale()
-    return self.baleWrapper.spec_baleWrapper.lastDroppedBale
+    local baleId = self.baleWrapper.spec_baleWrapper.lastDroppedBaleId
+    return baleId and NetworkUtil.getObject(baleId)
+end
+
+--- The bale currently held by the grabber or on the wrapping table, if any.
+function BaleWrapperController:getBaleOnWrapper()
+    local spec = self.baleWrapper.spec_baleWrapper
+    local baleId = spec.currentWrapper and spec.currentWrapper.currentBale or spec.baleGrabber.currentBale
+    return baleId and NetworkUtil.getObject(baleId)
+end
+
+--- The bale finder drives on (slowly) to the next bale while wrapping, so it handles the speed itself.
+function BaleWrapperController:setKeepDrivingWhileWrapping(keepDriving)
+    self.keepDrivingWhileWrapping = keepDriving
 end
 
 function BaleWrapperController:handleBaleWrapper()
     local maxSpeed
     -- stop while wrapping only if we don't have a baler. If we do we should continue driving and working
     -- on the next bale, the baler code will take care about stopping if we need to
-    if self:isWorking() and not self.haveBaler then
+    if self:isWorking() and not self.haveBaler and not self.keepDrivingWhileWrapping then
         maxSpeed = 0
     end
     -- Yes, Giants has a typo in the state (and yes, in FS22 as well...)

@@ -14,33 +14,15 @@ function CpFieldWorkHudPageElement:setupElements(baseHud, vehicle, lines, wMargi
 	
     --- Time remaining text
     local x, y = unpack(lines[7].right)
-    self.timeRemainingText = CpTextHudElement.new(self, x - 2 * baseHud.wMargin, y, 
-        CpBaseHud.defaultFontSize, RenderText.ALIGN_RIGHT)
-    
+    self.timeRemainingText = CpTextHudElement.new(self, x - 2.5 * baseHud.wMargin, y,
+        CpBaseHud.defaultFontSize, RenderText.ALIGN_RIGHT, CpBaseHud.SECONDARY_TEXT_COLOR)
+
     --- Toggle waypoint visibility.
-    local width, height = getNormalizedScreenValues(20, 20)
-    local courseVisibilityOverlay = CpGuiUtil.createOverlayFromSlice(
-        "cpIconSprite.eye", 
-        {width, height},
-        CpBaseHud.OFF_COLOR,
-        CpBaseHud.alignments.bottomRight)
-    self.courseVisibilityBtn = CpHudButtonElement.new(courseVisibilityOverlay, self)
-    local x, y = unpack(lines[8].right)
-    y = y - hMargin/8
-    local courseVisibilityBtnX = x - width - wMargin/4
-    self.courseVisibilityBtn:setPosition(courseVisibilityBtnX, y)
+    self.courseVisibilityBtn = baseHud:addToolbarButton(self, 2, "cpIconSprite.eye", 14)
     self.courseVisibilityBtn:setCallback("onClickPrimary", vehicle, function (vehicle)
         vehicle:getCpSettings().showCourse:setNextItem()
     end)
-    local width, height = getNormalizedScreenValues(18, 18)
-    local reverseCourseOverlay = CpGuiUtil.createOverlayFromSlice(
-        "cpIconSprite.refresh", 
-        {width, height},
-        CpBaseHud.OFF_COLOR,
-        CpBaseHud.alignments.bottomRight)
-    self.reverseCourseBtn = CpHudButtonElement.new(reverseCourseOverlay, self)
-    local reverseCourseBtnX = courseVisibilityBtnX - 2*width - wMargin/2 - wMargin/8
-    self.reverseCourseBtn:setPosition(reverseCourseBtnX, y + hMargin/32)
+    self.reverseCourseBtn = baseHud:addToolbarButton(self, 4, "cpIconSprite.refresh", 13)
     self.reverseCourseBtn:setCallback("onClickPrimary", vehicle, function (vehicle)
         vehicle:cpReverseCurrentCourse()
     end)
@@ -70,13 +52,17 @@ function CpFieldWorkHudPageElement:setupElements(baseHud, vehicle, lines, wMargi
     self.courseNameBtn = baseHud:addLeftLineTextButton(self, 4, CpBaseHud.defaultFontSize, 
                                                         function(vehicle)
                                                             baseHud:openCourseGeneratorGui(vehicle)
-                                                        end, vehicle)              
+                                                        end, vehicle)
+    --- Leaves room for the waypoint progress.
+    local progressWidth = getNormalizedScreenValues(80, 0)
+    self.courseNameBtn:setTextLimitWidth(lines[4].right[1] - lines[4].left[1] - progressWidth)
 
 	--- Waypoint progress
-	self.waypointProgressBtn = baseHud:addRightLineTextButton(self, 4, CpBaseHud.defaultFontSize, 
+	self.waypointProgressBtn = baseHud:addRightLineTextButton(self, 4, CpBaseHud.defaultFontSize,
 														function(vehicle)
 															baseHud:openCourseManagerGui(vehicle)
 														end, vehicle)
+	self.waypointProgressBtn:setTextColorChannels(unpack(CpBaseHud.SECONDARY_TEXT_COLOR))
                                                         
     CpGuiUtil.addCopyCourseBtn(self, baseHud, vehicle, lines, wMargin, hMargin, 1)    												
 end

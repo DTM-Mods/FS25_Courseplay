@@ -1,0 +1,222 @@
+# Watches the upstream mods our forks are based on and posts new versions to the
+# DTM Mods Discord (#upstream-updates), so our forks can keep up.
+#   Courseplay:      GitHub releases of Courseplay/Courseplay_FS25 + the ModHub listing
+#   AutoDrive:       GitHub releases of Stephan-S/FS25_AutoDrive (FS25 AutoDrive is not on ModHub)
+#   BetterContracts: GitHub releases of Mmtrx/FS25_BetterContracts
+# For a GitHub fork, the post links the pull request that merges upstream into our fork.
+# To watch another mod, add it to SOURCES below.
+# What was already seen is kept in the Actions cache. When nothing is cached (first run, or the
+# cache expired), it only records the current versions and posts nothing.
+# Needs the repository secret DISCORD_UPSTREAM_WEBHOOK (the Discord webhook URL).
+name: Upstream watch
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Post the current upstream versions as if they were new (to test the channel)"
+        type: boolean
+        default: false
+      only:
+        description: "With test: post only this source, e.g. autodrive-github"
+        required: false
+
+permissions:
+  contents: read
+  actions: write   # keep this scheduled workflow from being switched off after 60 quiet days
+
+concurrency:
+  group: upstream-watch
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore what was already seen
+        uses: actions/cache/restore@v4
+        with:
+          path: .upstream-state
+          key: upstream-state-${{ github.run_id }}
+          restore-keys: upstream-state-
+
+      - name: Check upstream and post to Discord
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WEBHOOK: ${{ secrets.DISCORD_UPSTREAM_WEBHOOK }}
+          TEST: ${{ inputs.test || false }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          python3 - <<'EOF'
+          import base64, json, os, re, sys, urllib.request
+
+          SOURCES = [
+              {"key": "courseplay-github", "mod": "Courseplay", "kind": "github",
+               "repo": "Courseplay/Courseplay_FS25", "ours": "DTM-Mods/FS25_Courseplay"},
+              {"key": "courseplay-modhub", "mod": "Courseplay", "kind": "modhub",
+               "mod_id": 331515, "ours": "DTM-Mods/FS25_Courseplay"},
+              {"key": "autodrive-github", "mod": "AutoDrive", "kind": "github",
+               "repo": "Stephan-S/FS25_AutoDrive", "ours": "DTM-Mods/FS25_AutoDrive"},
+              {"key": "bettercontracts-github", "mod": "BetterContracts", "kind": "github",
+               "repo": "Mmtrx/FS25_BetterContracts", "ours": "DTM-Mods/FS25_BetterContracts"},
+          ]
+          STATE = ".upstream-state/state.json"
+          TEST = os.environ.get("TEST") == "true"
+          ONLY = os.environ.get("ONLY", "").strip()
+          UA = "Mozilla/5.0 (compatible; dtm-upstream-watch)"
+
+          def get(url, gh=False):
+              headers = {"User-Agent": UA}
+              if gh:
+                  headers["Authorization"] = "Bearer " + os.environ["GH_TOKEN"]
+                  headers["Accept"] = "application/vnd.github+json"
+              with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as r:
+                  return r.read().decode("utf-8", "replace")
+
+          def our_version(repo):
+              try:
+                  info = json.loads(get(f"https://api.github.com/repos/{repo}/contents/modDesc.xml", gh=True))
+                  xml = base64.b64decode(info["content"]).decode("utf-8", "replace")
+                  m = re.search(r"<version>\s*([^<\s]+)\s*</version>", xml)
+                  return m.group(1) if m else None
+              except Exception as e:
+                  print(f"Could not read our version from {repo}: {e}")
+                  return None
+
+          def behind(ours, upstream):
+              # For a GitHub fork: (commits upstream has that our fork does not, link that opens the
+              # merge pull request). (None, None) when our repo is not a fork of upstream.
+              try:
+                  mine = json.loads(get(f"https://api.github.com/repos/{ours}", gh=True))
+                  if mine.get("parent", {}).get("full_name") != upstream:
+                      return None, None
+                  owner, name = upstream.split("/")
+                  base, head = mine["default_branch"], mine["parent"]["default_branch"]
+                  spec = f"{base}...{owner}:{name}:{head}"
+                  cmp = json.loads(get(f"https://api.github.com/repos/{ours}/compare/{spec}", gh=True))
+                  return cmp.get("ahead_by"), f"https://github.com/{ours}/compare/{spec}?expand=1"
+              except Exception as e:
+                  print(f"Could not compare {ours} with {upstream}: {e}")
+                  return None, None
+
+          def fork_status(src):
+              # Markdown for the "Our fork" field of a post.
+              ver = our_version(src["ours"])
+              name = src["ours"].split("/")[1]
+              text = f'[{name}](https://github.com/{src["ours"]}) is on {ver or "an unknown version"}.'
+              upstream = src.get("repo")
+              if not upstream:  # ModHub: compare against the GitHub upstream of the same mod
+                  upstream = next((s["repo"] for s in SOURCES if s["mod"] == src["mod"] and s.get("repo")), None)
+              n, link = behind(src["ours"], upstream) if upstream else (None, None)
+              if link and n:
+                  text += f"\n{n} upstream commit{'s' if n != 1 else ''} not merged yet: [open the merge pull request]({link})"
+              elif link:
+                  text += "\nUp to date with upstream."
+              else:
+                  text += "\nNot a GitHub fork, so merge upstream changes by hand."
+              return text
+
+          def check_github(src, seen):
+              rels = json.loads(get(f'https://api.github.com/repos/{src["repo"]}/releases?per_page=10', gh=True))
+              rels = [r for r in rels if not r.get("draft")]
+              tags = [r["tag_name"] for r in rels]
+              if seen is None:
+                  return ([rels[0]] if TEST and rels else []), tags
+              new = [r for r in rels if r["tag_name"] not in seen]
+              if TEST and not new and rels:
+                  new = [rels[0]]
+              posts = []
+              for r in reversed(new):  # oldest first
+                  test = " (pre-release)" if r.get("prerelease") else ""
+                  body = (r.get("body") or "").strip()
+                  if len(body) > 3500:
+                      body = body[:3500].rstrip() + "\n\n...full notes on GitHub"
+                  title = f'{src["mod"]} {r["tag_name"]}{test}'
+                  posts.append({
+                      "content": f'**{src["mod"]} {r["tag_name"]}** is out on GitHub{test}.',
+                      "embeds": [{
+                          "title": title, "url": r["html_url"],
+                          "description": body or "No release notes.",
+                          "color": 0xF59E0B if test else 0x3B82F6,
+                          "fields": [{"name": "Our fork", "value": fork_status(src)}],
+                          "footer": {"text": src["repo"]},
+                          "timestamp": r.get("published_at"),
+                      }],
+                  })
+              return posts, sorted(set(tags) | set(seen or []))
+
+          def check_modhub(src, seen):
+              url = f'https://www.farming-simulator.com/mod.php?lang=en&country=us&mod_id={src["mod_id"]}&title=fs2025'
+              page = get(url)
+              m = re.search(r">\s*Version\s*<.*?(\d+(?:\.\d+)+)", page, re.S)
+              if not m:
+                  raise RuntimeError(f"No version found on the ModHub page {url}")
+              ver = m.group(1)
+              d = re.search(r">\s*Released\s*<.*?(\d{2}\.\d{2}\.\d{4})", page, re.S)
+              released = d.group(1) if d else "unknown date"
+              if seen is None and not TEST:
+                  return [], ver
+              if seen == ver and not TEST:
+                  return [], ver
+              was = f" (was {seen})" if seen and seen != ver else ""
+              return [{
+                  "content": f'**{src["mod"]} {ver}** is out on ModHub{was}.',
+                  "embeds": [{
+                      "title": f'{src["mod"]} {ver} on ModHub', "url": url,
+                      "description": f"Released {released}. Players get this through the in-game ModHub.",
+                      "color": 0x2ECC71,
+                      "fields": [{"name": "Our fork", "value": fork_status(src)}],
+                      "footer": {"text": "ModHub"},
+                  }],
+              }], ver
+
+          try:
+              state = json.load(open(STATE))
+          except Exception:
+              state = {}
+              print("No saved state, recording the current versions")
+
+          posts, failed = [], False
+          for src in SOURCES:
+              try:
+                  check = check_github if src["kind"] == "github" else check_modhub
+                  p, state[src["key"]] = check(src, state.get(src["key"]))
+                  if TEST and ONLY and src["key"] != ONLY:
+                      p = []
+                  print(f'{src["key"]}: {len(p)} new')
+                  posts += p
+              except Exception as e:
+                  failed = True
+                  print(f'::error::{src["key"]}: {e}')
+
+          webhook = os.environ.get("WEBHOOK")
+          if posts and not webhook:
+              sys.exit("The DISCORD_UPSTREAM_WEBHOOK secret is not set")
+          for p in posts:
+              p.update({"username": "Upstream Watch", "allowed_mentions": {"parse": []}})
+              req = urllib.request.Request(webhook + "?wait=true", data=json.dumps(p).encode(),
+                                           headers={"Content-Type": "application/json", "User-Agent": UA})
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  print("Posted:", p["content"], "HTTP", r.status)
+
+          if not TEST:  # a test run must not mark anything as seen
+              os.makedirs(".upstream-state", exist_ok=True)
+              json.dump(state, open(STATE, "w"), indent=2)
+          print(json.dumps(state, indent=2))
+          sys.exit(1 if failed else 0)
+          EOF
+
+      - name: Save what was seen
+        # also after a failed source, so the sources that worked are not posted again
+        if: ${{ always() && !inputs.test && hashFiles('.upstream-state/state.json') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .upstream-state
+          key: upstream-state-${{ github.run_id }}
+
+      - name: Keep the schedule alive
+        if: ${{ github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/upstream-watch.yml/enable"

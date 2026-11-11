@@ -1,47 +1,72 @@
-# Courseplay Beta for Farming Simulator 25
+<p align="center">
+  <a href="https://github.com/DTM-Mods"><img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/dtm-header.jpg" alt="DTM Mods by PropaineX & Fennell" width="100%"></a>
+</p>
 
-[![ModHub Release](https://img.shields.io/badge/dynamic/xml?color=blue&style=flat-square&label=Modhub+Release&prefix=v&query=%2F%2Fdiv%5B%40class%3D'table-row'%5D%5Bdiv%5B%40class%3D'table-cell'%5D%2Fb%5Btext()%3D'Version'%5D%5D%2Fdiv%5B%40class%3D'table-cell'%5D%5B2%5D&url=https%3A%2F%2Fwww.farming-simulator.com%2Fmod.php%3Flang%3Dde%26country%3Dde%26mod_id%3D331515%26title%3Dfs2025)](https://www.farming-simulator.com/mod.php?mod_id=331515&title=fs2025)
-[![GitHub Release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Courseplay/Courseplay_FS25?include_prereleases&style=flat-square&label=GitHub+Release)](https://github.com/Courseplay/Courseplay_FS25/releases/latest)
-[![GitHub Release Downloads (by Asset)](https://img.shields.io/github/downloads-pre/Courseplay/Courseplay_FS25/latest/FS25_Courseplay.zip?style=flat-square)](https://github.com/Courseplay/Courseplay_FS25/releases/latest/download/FS25_Courseplay.zip)
-[![GitHub Issues](https://img.shields.io/github/issues/Courseplay/Courseplay_FS25?style=flat-square)](https://github.com/Courseplay/Courseplay_FS25/issues)
+# FS25_Courseplay (CourseCorrect panel fork)
 
-**[Download the latest developer version](https://github.com/Courseplay/Courseplay_FS25/releases/latest)** (the file FS25_Courseplay.zip).
+A fork of [Courseplay for Farming Simulator 25](https://github.com/Courseplay/Courseplay_FS25)
+(based on 8.1.0.x) with the **CourseCorrect panel**: a compact in-game HUD that replaces the stock
+Courseplay HUD. Everything else is Courseplay as upstream ships it.
 
-**[Courseplay Website](https://courseplay.github.io/CourseplayHelpFS25/)**
+Select it in Courseplay > Settings > Global > HUD style = CourseCorrect.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/features.jpg" alt="Features" width="100%">
+</p>
 
-This and the Giants ModHub is the **only official source for Courseplay**, if you see it anywhere else, it's a scam.
+## What the panel adds
 
-## Tutorials
+- Course tab: the vehicle's course on a live map, progress with time left, the others working the same
+  field as arrows, work width, field margin, row overlap and tool offset (shows the automatic plow offset).
+- Saved tab: load and save courses.
+- Fleet tab: every Courseplay and AutoDrive vehicle on the farm with status, progress and distance;
+  click a row to enter the vehicle.
+- Settings tab: the vehicle's Courseplay settings.
+- Minimized panel: small map, status, Start/Stop, "Make course" and "Positions on map" buttons.
+- Unloaders: the combine's course, progress and position on the truck's panel. "Go to combine" sends a
+  truck that is away from the field there with AutoDrive and starts the Courseplay unloader on arrival.
+- Combines: "Call truck" lists the farm's free trucks nearest first and starts one as unloader, with an
+  AutoDrive leg when it is far away.
+- Map arrows are clickable (enter that vehicle) and show the vehicle's name on hover.
+- Course generator: row overlap setting (centre rows, 0-20 %).
+- Multiplayer: maps and statuses work on clients that never ran field detection.
 
-German Tutorial by Mario Hirschfeld: https://www.youtube.com/playlist?list=PL-UvOFIL55_jXAy6UkVJuLOD5DWKLuzIm
+The panel lives in `scripts/gui/hud/CpModernHud.lua` and `scripts/gui/hud/CpHudDraw.lua`; the row overlap
+setting is in `scripts/courseGenerator/FieldworkContext.lua`.
 
-English Tutorial by Argsy Gaming: https://www.youtube.com/playlist?list=PLFh-GZbaG02w9uLl_qroCi6uVI0LDXrD1
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/installation.jpg" alt="Installation" width="100%">
+</p>
 
-Courseplay functions are also documented on our [website](https://courseplay.github.io/CourseplayHelpFS25/) and in the in-game Courseplay menu.
+Download `FS25_Courseplay.zip` from the [latest release](https://github.com/DTM-Mods/FS25_Courseplay/releases/latest) and put it in `Documents/My Games/FarmingSimulator2025/mods`, without unzipping or renaming it. In multiplayer, the server and every player need the same version.
 
-<img width="1920" height="1200" alt="Courseplay Website" src="https://github.com/user-attachments/assets/52a82a7e-ca9d-40ae-9443-f60c7cbeebe4" />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/license.jpg" alt="License" width="100%">
+</p>
 
-## Developer version
+GPL-3.0, like upstream Courseplay. See `LICENSE.txt`. Courseplay is the work of the Courseplay dev team;
+the CourseCorrect panel is the addition of this fork.
 
-Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. Chances are you computer will explode when using it. Twice. If you have no idea what "beta", "alpha", or "developer" means and entails, steer clear. The Courseplay team will not take any responsibility for crop destroyed, savegames deleted or baby pandas killed.
+<details>
+<summary><b>For developers</b>: files, building and tests</summary>
 
-You have been warned.
+### Building
 
-If you're still ok with this, please remember to post possible issues that you find in the developer version. That's the only way we can find sources of error and fix them.
-Be as specific as possible:
+Zip the contents of this folder (not the folder itself) as `FS25_Courseplay.zip`, excluding `.git`,
+`.gitignore` and `README.md`. Keep the file name: savegames identify a mod by its zip name. Lua files must
+stay under 0.5 MB each for the GIANTS mod checks.
 
-* tell us the version number
-* only use the vehicles necessary, not 10 other ones at a time
-* which vehicles are involved, what is the intended action?
-* Post! The! Log! to [Gist](https://gist.github.com/) or [PasteBin](http://pastebin.com/)
-* For more details on how to post a proper bug report, visit our [Wiki](https://github.com/Courseplay/Courseplay_FS25/wiki)
+### Tests
 
+Mods are Lua 5.1 and there is no standalone Lua here. The panel is tested offline with Python `lupa`
+(Lua 5.1) plus engine stubs, rendering scenes to PNG and running behaviour tests. The upstream Courseplay
+tests under `scripts/test` run the same way.
 
-## Help Us Out
+</details>
 
-We work long, hard, in our own free time at developing and improving Courseplay. If you like the project, show us your undying love:
+---
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7PDM2P6HQ5D56&item_name=Promote+the+development+of+Courseplay&currency_code=EUR&source=url)
-
-<a href="https://www.buymeacoffee.com/courseplay" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<p align="center">
+  <a href="https://github.com/DTM-Mods"><img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/dtm-intro.gif" alt="DTM Mods by PropaineX & Fennell" width="420"></a><br>
+  <sub>Part of <a href="https://github.com/DTM-Mods">DTM Mods</a> (Dead To Me) by PropaineX & Fennell</sub>
+</p>
