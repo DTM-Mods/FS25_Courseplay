@@ -128,3 +128,55 @@ function CpCollisionGhost.getComponentNodes(vehicle)
     end
     return nodes
 end
+
+--- Is this a shape the physics engine collides with? A vehicle's collision geometry is its components (rigid
+--- bodies) and the compound children under them (the collision parts: body, railings, the pipe arms...), each with
+--- a collision mask of its own.
+local function isCollisionShape(node)
+    if getIsCompoundChild ~= nil and getIsCompoundChild(node) then
+        return true
+    end
+    if getRigidBodyType ~= nil and RigidBodyType ~= nil and RigidBodyType.NONE ~= nil then
+        return getRigidBodyType(node) ~= RigidBodyType.NONE
+    end
+    return false
+end
+
+-- how deep into a node tree the shapes are looked for
+CpCollisionGhost.MAX_DEPTH = 40
+
+--- Every collision shape in the tree under node, node itself included.
+---@param node number
+---@param result table list the nodes are added to
+---@return table result
+function CpCollisionGhost.collectCollisionShapes(node, result, depth)
+    depth = depth or 0
+    if node == nil or node == 0 or not entityExists(node) or depth > CpCollisionGhost.MAX_DEPTH then
+        return result
+    end
+    if isCollisionShape(node) then
+        table.insert(result, node)
+    end
+    if getNumOfChildren ~= nil and getChildAt ~= nil then
+        for i = 0, getNumOfChildren(node) - 1 do
+            CpCollisionGhost.collectCollisionShapes(getChildAt(node, i), result, depth + 1)
+        end
+    end
+    return result
+end
+
+--- The collision shapes of a vehicle and everything attached to it: the components and the compound children
+--- under them. Just the components when the engine functions to find the children are missing.
+---@param vehicle table root vehicle
+---@return table list of nodes
+function CpCollisionGhost.getCollisionNodes(vehicle)
+    local components = CpCollisionGhost.getComponentNodes(vehicle)
+    local nodes = {}
+    for _, component in ipairs(components) do
+        CpCollisionGhost.collectCollisionShapes(component, nodes)
+    end
+    if #nodes == 0 then
+        return components
+    end
+    return nodes
+end

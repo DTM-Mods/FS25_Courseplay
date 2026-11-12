@@ -41,7 +41,8 @@ to its title, and the Fleet tab and the server need everyone on the same one.
 - Harvesters never unload into another harvester (two beet harvesters side by side used to wait on
   each other for good).
 - Drive through what blocks the helper (global setting, on by default): a helper held up for 10
-  seconds by a vehicle or an object that does not move stops colliding with it and drives through.
+  seconds by a vehicle or an object that does not move stops colliding with it and drives through. A
+  helper whose unloading pipe has caught on something beside it drives the pipe through it.
 
 The panel lives in `scripts/gui/hud/CpModernHud.lua` and `scripts/gui/hud/CpHudDraw.lua`; the row overlap
 setting is in `scripts/courseGenerator/FieldworkContext.lua`; the drive-through logic is in

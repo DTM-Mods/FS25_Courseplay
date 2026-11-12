@@ -3,6 +3,16 @@
 Versions are `<Courseplay version>-cc.<CourseCorrect build>`. The release workflow takes the notes for a
 version from its `## <version>` section here.
 
+## 8.1.0.3-cc.6
+
+- Unloading pipe caught on something: a helper that stands still for 10 seconds although it wants to
+  drive, with nothing in front of its sensors and the pipe out, has hooked the pipe on a tree, a
+  building or a vehicle beside it, where no sensor looks. The pipe's collision parts then pass through
+  all of those (never the terrain) until the helper has driven its own length on.
+- Drive through what blocks the helper now changes every collision part of the vehicles (the parts
+  under the components, the pipe arms among them), not only the components themselves, which on most
+  vehicles carry no collision of their own.
+
 ## 8.1.0.3-cc.5
 
 - Clear (forget the course) is there whenever Courseplay itself is not driving the course: also while

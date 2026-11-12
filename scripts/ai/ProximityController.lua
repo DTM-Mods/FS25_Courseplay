@@ -35,6 +35,8 @@ function ProximityController:init(vehicle, width)
     self.blockedSince = nil
     -- the obstacle we are driving through, see startGhost()
     self.ghost = nil
+    -- since when we stand still although the strategy wants to move, with nothing in front of the sensors
+    self.stalledSince = nil
     local frontMarker, backMarker = Markers.getMarkerNodes(self.vehicle)
     self.forwardLookingProximitySensorPack = WideForwardLookingProximitySensorPack(
             self.vehicle, frontMarker, self.sensorRange, 1, width)
@@ -303,12 +305,7 @@ end
 --- never the terrain.
 ---@return table list of flags, empty when the obstacle can't be ghosted
 function ProximityController:getGhostableFlags(blocker)
-    local flags = {}
-    for _, name in ipairs(self.ghostableFlagNames) do
-        if CollisionFlag[name] then
-            table.insert(flags, CollisionFlag[name])
-        end
-    end
+    local flags = self:getAllGhostableFlags()
     local result = {}
     if blocker.objectId and blocker.objectId ~= 0 and getCollisionFilterGroup and entityExists(blocker.objectId) then
         result = CpCollisionGhost.getFlagsInGroup(getCollisionFilterGroup(blocker.objectId), flags)
@@ -325,10 +322,63 @@ function ProximityController:getGhostableFlags(blocker)
     return result
 end
 
+--- Every collision flag a ghost may remove (never the terrain)
+---@return table list of flags
+function ProximityController:getAllGhostableFlags()
+    local flags = {}
+    for _, name in ipairs(self.ghostableFlagNames) do
+        if CollisionFlag[name] then
+            table.insert(flags, CollisionFlag[name])
+        end
+    end
+    return flags
+end
+
 ---@param vehicle table
 ---@return boolean true if the vehicle moves slower than 1 km/h
 function ProximityController.isStandingStill(vehicle)
     return math.abs(vehicle.lastSpeedReal or 0) * 3600 < 1
+end
+
+--- Is this pipe (unloading auger) out?
+---@param spec table spec_pipe
+local function isPipeOpen(spec)
+    local state = spec.currentState
+    if state == nil then
+        return false
+    end
+    local open = PipeController and PipeController.PIPE_STATE_OPEN or 2
+    return state == open or (spec.unloadingStates ~= nil and spec.unloadingStates[state] == true)
+end
+
+--- The pipes that are out on a vehicle and what is attached to it
+---@param vehicle table root vehicle
+---@return table list of spec_pipe
+function ProximityController.getOpenPipes(vehicle)
+    local pipes = {}
+    if vehicle == nil or vehicle.isDeleted then
+        return pipes
+    end
+    for _, v in ipairs(vehicle.getChildVehicles and vehicle:getChildVehicles() or { vehicle }) do
+        if v.spec_pipe ~= nil and isPipeOpen(v.spec_pipe) then
+            table.insert(pipes, v.spec_pipe)
+        end
+    end
+    return pipes
+end
+
+--- The collision shapes of the pipes that are out (the arms of the auger). Empty when the pipe has no nodes of
+--- its own (animated pipes).
+---@param vehicle table root vehicle
+---@return table list of nodes
+function ProximityController.getOpenPipeNodes(vehicle)
+    local nodes = {}
+    for _, spec in ipairs(ProximityController.getOpenPipes(vehicle)) do
+        for _, entry in ipairs(spec.nodes or {}) do
+            CpCollisionGhost.collectCollisionShapes(entry.node, nodes)
+        end
+    end
+    return nodes
 end
 
 local function getRadius(vehicle)
@@ -377,11 +427,11 @@ function ProximityController:startGhost(blocker)
     local ghost = { vehicle = blocker.vehicle, object = blocker.object, objectId = blocker.objectId,
                     since = g_time, flags = flags }
     ghost.x, _, ghost.z = getWorldTranslation(self.vehicle.rootNode)
-    for _, node in ipairs(CpCollisionGhost.getComponentNodes(self.vehicle)) do
+    for _, node in ipairs(CpCollisionGhost.getCollisionNodes(self.vehicle)) do
         CpCollisionGhost.hold(ghost, node, flags)
     end
     if ghost.vehicle and CollisionFlag.VEHICLE then
-        for _, node in ipairs(CpCollisionGhost.getComponentNodes(ghost.vehicle)) do
+        for _, node in ipairs(CpCollisionGhost.getCollisionNodes(ghost.vehicle)) do
             CpCollisionGhost.hold(ghost, node, { CollisionFlag.VEHICLE })
         end
     end
@@ -389,6 +439,35 @@ function ProximityController:startGhost(blocker)
     self.blockedSince = nil
     CpUtil.debugVehicle(CpDebug.DBG_TRAFFIC, self.vehicle, 'Blocked by %s for %.0f seconds, driving through it',
             ghost.vehicle and CpUtil.getName(ghost.vehicle) or 'an object', self.ghostAfterMs / 1000)
+end
+
+--- We do not move although the strategy wants us to, the sensors see nothing, and the pipe is out: the pipe has
+--- caught on something beside us (a tree, a building, a vehicle) where no sensor looks. The pipe's shapes stop
+--- colliding with all of those (never the terrain) until we have driven our own length on. A pipe without
+--- shapes of its own (animated pipes) takes the whole vehicle along.
+function ProximityController:startPipeGhost()
+    local flags = self:getAllGhostableFlags()
+    local nodes = ProximityController.getOpenPipeNodes(self.vehicle)
+    local what = 'the pipe'
+    if #nodes == 0 then
+        nodes = CpCollisionGhost.getCollisionNodes(self.vehicle)
+        what = 'the vehicle'
+    end
+    if #flags == 0 or #nodes == 0 then
+        -- try again in a while
+        self.stalledSince = g_time
+        return
+    end
+    local ghost = { pipe = true, since = g_time, flags = flags }
+    ghost.x, _, ghost.z = getWorldTranslation(self.vehicle.rootNode)
+    for _, node in ipairs(nodes) do
+        CpCollisionGhost.hold(ghost, node, flags)
+    end
+    self.ghost = ghost
+    self.stalledSince = nil
+    CpUtil.debugVehicle(CpDebug.DBG_TRAFFIC, self.vehicle,
+            'Not moving for %.0f seconds with the pipe out and nothing in front: %s drives through what it caught on',
+            self.ghostAfterMs / 1000, what)
 end
 
 function ProximityController:endGhost(reason)
@@ -433,8 +512,21 @@ function ProximityController:updateGhost(requestedMaxSpeed, speed, blocker)
         end
         return
     end
+    local wantsToMove = (requestedMaxSpeed or 0) > 0
+    -- stalled: the strategy wants to move, nothing in front of the sensors, and still we stand: with the pipe out,
+    -- the pipe has caught on something
+    local stalled = blocker == nil and wantsToMove and (speed or 0) > 0 and
+            ProximityController.isStandingStill(self.vehicle) and #ProximityController.getOpenPipes(self.vehicle) > 0
+    if not stalled then
+        self.stalledSince = nil
+    elseif self.stalledSince == nil then
+        self.stalledSince = g_time
+    elseif g_time - self.stalledSince >= self.ghostAfterMs and self:isGhostEnabled() then
+        self:startPipeGhost()
+        return
+    end
     -- blocked only counts when the strategy wanted to move and the sensor, not the terrain, held us
-    local blocked = blocker ~= nil and (requestedMaxSpeed or 0) > 0 and (speed or 0) <= 0 and not blocker.hitTerrain
+    local blocked = blocker ~= nil and wantsToMove and (speed or 0) <= 0 and not blocker.hitTerrain
     if not blocked then
         self.blockedSince = nil
         return
