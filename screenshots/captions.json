@@ -18,5 +18,10 @@
     "title": "Global settings",
     "text": "Choose the HUD style, mouse use and what shows on the minimap.",
     "at": "bottom"
+  },
+  "6.jpg": {
+    "title": "The CourseCorrect panel",
+    "text": "The vehicle's course on a live map, with New course and Start right below it.",
+    "at": "bottom"
   }
 }
