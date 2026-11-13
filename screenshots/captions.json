@@ -1,0 +1,22 @@
+{
+  "2.jpg": {
+    "title": "Create a job on the map",
+    "text": "Pick the job, the target and its settings next to the map, then start the helper.",
+    "at": "bottom"
+  },
+  "3.jpg": {
+    "title": "Course manager",
+    "text": "Your saved courses in folders, ready to load into any vehicle.",
+    "at": "bottom"
+  },
+  "4.jpg": {
+    "title": "Vehicle settings",
+    "text": "Course, turn and pathfinder settings for the vehicle you sit in.",
+    "at": "bottom"
+  },
+  "5.jpg": {
+    "title": "Global settings",
+    "text": "Choose the HUD style, mouse use and what shows on the minimap.",
+    "at": "bottom"
+  }
+}
