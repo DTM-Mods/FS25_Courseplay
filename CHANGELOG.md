@@ -3,6 +3,10 @@
 Versions are `<Courseplay version>-cc.<CourseCorrect build>`. The release workflow takes the notes for a
 version from its `## <version>` section here.
 
+## 8.1.0.3-cc.7
+
+- The author now shows as **DTM Mods, Fennell** in the mod list, with credit to the Courseplay.devTeam, who made the original mod.
+
 ## 8.1.0.3-cc.6
 
 - Unloading pipe caught on something: a helper that stands still for 10 seconds although it wants to
