@@ -28,3 +28,5 @@ jobs:
       test-tag: ${{ inputs.test-tag || '' }}
       # Settings for this mod (see DTM-Mods/.github ci/README.md):
       max-files: 0                           # Courseplay has ~390 files; it never goes to ModHub from here
+      modhub: false                          # a fork; the GIANTS ModHub rules don't apply
+      auto-release: false                    # releases stay by hand (cc build labels, upstream merges)
