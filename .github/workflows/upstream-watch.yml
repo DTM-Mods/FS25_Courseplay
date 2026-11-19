@@ -48,8 +48,21 @@ jobs:
           TEST: ${{ inputs.test || false }}
           ONLY: ${{ inputs.only }}
         run: |
+          # the shared emoji helper (DTM-Mods/.github ci/discord_emojis.py); without it the post has no emojis
+          curl -fsSL --retry 2 -o "$RUNNER_TEMP/discord_emojis.py" \
+            https://raw.githubusercontent.com/DTM-Mods/.github/main/ci/discord_emojis.py \
+            || echo "::warning::discord_emojis.py not downloaded, posting without emojis"
           python3 - <<'EOF'
           import base64, json, os, re, sys, urllib.request
+          sys.path.insert(0, os.environ["RUNNER_TEMP"])
+          try:
+              import discord_emojis as emo
+          except Exception:
+              emo = None
+
+          def E(kind):
+              """The DTM Discord's custom emoji for this kind of post (Unicode if it has none), and a space."""
+              return emo.get(kind) + " " if emo else ""
 
           SOURCES = [
               {"key": "courseplay-github", "mod": "Courseplay", "kind": "github",
@@ -134,7 +147,7 @@ jobs:
                       body = body[:3500].rstrip() + "\n\n...full notes on GitHub"
                   title = f'{src["mod"]} {r["tag_name"]}{test}'
                   posts.append({
-                      "content": f'**{src["mod"]} {r["tag_name"]}** is out on GitHub{test}.',
+                      "content": E("test" if test else "github") + f'**{src["mod"]} {r["tag_name"]}** is out on GitHub{test}.',
                       "embeds": [{
                           "title": title, "url": r["html_url"],
                           "description": body or "No release notes.",
@@ -161,7 +174,7 @@ jobs:
                   return [], ver
               was = f" (was {seen})" if seen and seen != ver else ""
               return [{
-                  "content": f'**{src["mod"]} {ver}** is out on ModHub{was}.',
+                  "content": E("update") + f'**{src["mod"]} {ver}** is out on ModHub{was}.',
                   "embeds": [{
                       "title": f'{src["mod"]} {ver} on ModHub', "url": url,
                       "description": f"Released {released}. Players get this through the in-game ModHub.",
